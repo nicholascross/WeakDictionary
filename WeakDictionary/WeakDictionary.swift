@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct WeakDictionary<Key : Hashable & Comparable, Value : AnyObject> : Collection {
+public struct WeakDictionary<Key : Hashable, Value : AnyObject> : Collection {
     
     public typealias Index = DictionaryIndex<Key, WeakDictionaryReference<Value>>
     
@@ -139,7 +139,7 @@ public struct WeakDictionaryReference<Value : AnyObject> {
     fileprivate weak var value: Value?
 }
 
-public struct WeakDictionaryKey<Key : AnyObject & Identifiable> : Hashable, Comparable {
+public struct WeakDictionaryKey<Key : AnyObject & Identifiable> : Hashable {
 
     fileprivate weak var baseKey: Key?
     private let identity: Key.Identity
@@ -156,25 +156,9 @@ public struct WeakDictionaryKey<Key : AnyObject & Identifiable> : Hashable, Comp
     public var hashValue: Int {
         return identity.hashValue
     }
-    
-    public static func <(lhs: WeakDictionaryKey, rhs: WeakDictionaryKey) -> Bool {
-        return lhs.identity < rhs.identity
-    }
-    
-    public static func <=(lhs: WeakDictionaryKey, rhs: WeakDictionaryKey) -> Bool {
-        return lhs.identity <= rhs.identity
-    }
-    
-    public static func >=(lhs: WeakDictionaryKey, rhs: WeakDictionaryKey) -> Bool {
-        return lhs.identity >= rhs.identity
-    }
-    
-    public static func >(lhs: WeakDictionaryKey, rhs: WeakDictionaryKey) -> Bool {
-        return lhs.identity > rhs.identity
-    }
 }
 
 public protocol Identifiable {
-    associatedtype Identity: Hashable, Comparable
+    associatedtype Identity: Hashable
     func identifier() -> Identity
 }
