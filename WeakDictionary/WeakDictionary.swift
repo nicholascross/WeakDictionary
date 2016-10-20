@@ -76,7 +76,105 @@ public struct WeakDictionary<Key : Hashable & Comparable, Value : AnyObject> : C
     }
 }
 
+public struct WeakKeyDictionary<Key : AnyObject & Identifiable, Value : AnyObject> : Collection {
+    public typealias Index = DictionaryIndex<WeakDictionaryKey<Key>, WeakDictionaryReference<Value>>
+    
+    private var storage: WeakDictionary<WeakDictionaryKey<Key>, Value>
+    
+    public init() {
+        storage = WeakDictionary<WeakDictionaryKey<Key>, Value>()
+    }
+    
+    private init(withStorage s: WeakDictionary<WeakDictionaryKey<Key>, Value>) {
+        storage = s
+    }
+    
+    public var startIndex : Index {
+        return storage.startIndex
+    }
+    
+    public var endIndex : Index {
+        return storage.endIndex
+    }
+    
+    public func index(after i: Index) -> Index {
+        return storage.index(after: i)
+    }
+    
+    public subscript(position: Index) -> (WeakDictionaryKey<Key>, WeakDictionaryReference<Value>) {
+        get {
+            return storage[position]
+        }
+    }
+    
+    public subscript(key: Key) -> Value? {
+        get {
+            return storage[WeakDictionaryKey<Key>(key: key)]
+        }
+        
+        set {
+            storage[WeakDictionaryKey<Key>(key: key)] = newValue
+        }
+    }
+    
+    public subscript(bounds: Range<Index>) -> WeakKeyDictionary<Key, Value> {
+        let subStorage = storage[bounds.lowerBound ..< bounds.upperBound]
+        var newStorage = WeakDictionary<WeakDictionaryKey<Key>, Value>()
+        
+        subStorage.filter({ key, value in return key.baseKey != nil && value.value != nil }).forEach({
+            key, value in
+            newStorage[key] = value.value
+        })
+        
+        return WeakKeyDictionary<Key, Value>(withStorage: newStorage)
+    }
+    
+    public func reapedDictionary() -> WeakKeyDictionary<Key, Value> {
+        return self[startIndex ..< endIndex]
+    }
+
+}
+
 public struct WeakDictionaryReference<Value : AnyObject> {
     fileprivate weak var value: Value?
 }
 
+public struct WeakDictionaryKey<Key : AnyObject & Identifiable> : Hashable, Comparable {
+
+    fileprivate weak var baseKey: Key?
+    private let identity: Key.Identity
+    
+    public init(key: Key) {
+        baseKey = key
+        identity = key.identifier()
+    }
+    
+    public static func ==(lhs: WeakDictionaryKey, rhs: WeakDictionaryKey) -> Bool {
+        return lhs.identity == rhs.identity
+    }
+    
+    public var hashValue: Int {
+        return identity.hashValue
+    }
+    
+    public static func <(lhs: WeakDictionaryKey, rhs: WeakDictionaryKey) -> Bool {
+        return lhs.identity < rhs.identity
+    }
+    
+    public static func <=(lhs: WeakDictionaryKey, rhs: WeakDictionaryKey) -> Bool {
+        return lhs.identity <= rhs.identity
+    }
+    
+    public static func >=(lhs: WeakDictionaryKey, rhs: WeakDictionaryKey) -> Bool {
+        return lhs.identity >= rhs.identity
+    }
+    
+    public static func >(lhs: WeakDictionaryKey, rhs: WeakDictionaryKey) -> Bool {
+        return lhs.identity > rhs.identity
+    }
+}
+
+public protocol Identifiable {
+    associatedtype Identity: Hashable, Comparable
+    func identifier() -> Identity
+}

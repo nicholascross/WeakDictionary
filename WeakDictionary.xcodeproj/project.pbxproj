@@ -11,6 +11,7 @@
 		E101D8311DB76CE800B5BDB8 /* WeakDictionaryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E101D8301DB76CE800B5BDB8 /* WeakDictionaryTests.swift */; };
 		E101D8331DB76CE800B5BDB8 /* WeakDictionary.h in Headers */ = {isa = PBXBuildFile; fileRef = E101D8251DB76CE800B5BDB8 /* WeakDictionary.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E101D83D1DB76D1A00B5BDB8 /* WeakDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = E101D83C1DB76D1A00B5BDB8 /* WeakDictionary.swift */; };
+		E1381FC51DB8DEDF00FBB089 /* WeakKeyDictionaryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1381FC41DB8DEDF00FBB089 /* WeakKeyDictionaryTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -31,6 +32,7 @@
 		E101D8301DB76CE800B5BDB8 /* WeakDictionaryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeakDictionaryTests.swift; sourceTree = "<group>"; };
 		E101D8321DB76CE800B5BDB8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E101D83C1DB76D1A00B5BDB8 /* WeakDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeakDictionary.swift; sourceTree = "<group>"; };
+		E1381FC41DB8DEDF00FBB089 /* WeakKeyDictionaryTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeakKeyDictionaryTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,6 +87,7 @@
 			children = (
 				E101D8301DB76CE800B5BDB8 /* WeakDictionaryTests.swift */,
 				E101D8321DB76CE800B5BDB8 /* Info.plist */,
+				E1381FC41DB8DEDF00FBB089 /* WeakKeyDictionaryTests.swift */,
 			);
 			path = WeakDictionaryTests;
 			sourceTree = "<group>";
@@ -211,6 +214,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E101D8311DB76CE800B5BDB8 /* WeakDictionaryTests.swift in Sources */,
+				E1381FC51DB8DEDF00FBB089 /* WeakKeyDictionaryTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -410,6 +414,7 @@
 				E101D8381DB76CE800B5BDB8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		E101D8391DB76CE800B5BDB8 /* Build configuration list for PBXNativeTarget "WeakDictionaryTests" */ = {
 			isa = XCConfigurationList;
@@ -418,6 +423,7 @@
 				E101D83B1DB76CE800B5BDB8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

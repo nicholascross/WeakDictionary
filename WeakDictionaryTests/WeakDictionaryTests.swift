@@ -9,14 +9,14 @@
 import XCTest
 @testable import WeakDictionary
 
-class Sock {
+private class Sock {
     
 }
 
 
 class WeakDictionaryTests: XCTestCase {
     
-    var weakDictionary: WeakDictionary<String, Sock>!
+    private var weakDictionary: WeakDictionary<String, Sock>!
     
     override func setUp() {
         super.setUp()
@@ -27,7 +27,7 @@ class WeakDictionaryTests: XCTestCase {
     func testAssignment() {
         var s: Sock? = Sock()
         weakDictionary["avalue"] = s
-        XCTAssert(weakDictionary.count == 1, "Expected to be left holding an empty reference \(weakDictionary.count)")
+        XCTAssert(weakDictionary.count == 1, "Expected to be left holding a reference \(weakDictionary.count)")
         
         weak var s1 = weakDictionary["avalue"]
         XCTAssert(s1 != nil, "Expected avalue to have a value")
