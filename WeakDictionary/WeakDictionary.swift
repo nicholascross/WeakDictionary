@@ -34,10 +34,9 @@ public struct WeakDictionary<Key : Hashable & Comparable, Value : AnyObject> : C
         return storage.index(after: i)
     }
     
-    public subscript(position: Index) -> WeakDictionaryReference<Value> {
+    public subscript(position: Index) -> (Key, WeakDictionaryReference<Value>) {
         get {
-            let v = storage.values[position]
-            return v
+            return (storage.keys[position], storage.values[position])
         }
     }
     
@@ -47,7 +46,7 @@ public struct WeakDictionary<Key : Hashable & Comparable, Value : AnyObject> : C
                 return nil
             }
 
-            return self[index].value
+            return self[index].1.value
         }
         
         set {
