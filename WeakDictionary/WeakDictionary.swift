@@ -10,15 +10,15 @@ import Foundation
 
 public struct WeakDictionary<Key : Hashable & Comparable, Value : AnyObject> : Collection {
     
-    public typealias Index = DictionaryIndex<Key, WeakDictionaryReference<Key, Value>>
+    public typealias Index = DictionaryIndex<Key, WeakDictionaryReference<Value>>
     
-    private var storage: Dictionary<Key, WeakDictionaryReference<Key, Value>>
+    private var storage: Dictionary<Key, WeakDictionaryReference<Value>>
     
     public init() {
-        storage = Dictionary<Key, WeakDictionaryReference<Key, Value>>()
+        storage = Dictionary<Key, WeakDictionaryReference<Value>>()
     }
     
-    private init(withStorage s: Dictionary<Key, WeakDictionaryReference<Key, Value>>) {
+    private init(withStorage s: Dictionary<Key, WeakDictionaryReference<Value>>) {
         storage = s
     }
     
@@ -34,7 +34,7 @@ public struct WeakDictionary<Key : Hashable & Comparable, Value : AnyObject> : C
         return storage.index(after: i)
     }
     
-    public subscript(position: Index) -> WeakDictionaryReference<Key, Value> {
+    public subscript(position: Index) -> WeakDictionaryReference<Value> {
         get {
             let v = storage.values[position]
             return v
@@ -56,41 +56,28 @@ public struct WeakDictionary<Key : Hashable & Comparable, Value : AnyObject> : C
                 return
             }
             
-            storage[key] = WeakDictionaryReference<Key, Value>(key: key, value: value)
+            storage[key] = WeakDictionaryReference<Value>(value: value)
         }
     }
     
-    public subscript(bounds: Range<Index>) -> [(Key, Value?)] {
+    public subscript(bounds: Range<Index>) -> WeakDictionary<Key, Value> {
         let subStorage = storage[bounds.lowerBound ..< bounds.upperBound]
-        return subStorage.map({ key, value in
-            return (key, value.value)
+        var newStorage = Dictionary<Key, WeakDictionaryReference<Value>>()
+        
+        subStorage.filter({ key, value in return value.value != nil }).forEach({
+            key, value in
+            newStorage[key] = value
         })
+        
+        return WeakDictionary<Key, Value>(withStorage: newStorage)
     }
     
+    public func reapedDictionary() -> WeakDictionary<Key, Value> {
+        return self[startIndex ..< endIndex]
+    }
 }
 
-public struct WeakDictionaryReference<Key : Hashable & Comparable, Value : AnyObject> : Comparable {
-    fileprivate let key: Key
+public struct WeakDictionaryReference<Value : AnyObject> {
     fileprivate weak var value: Value?
-    
-    public static func ==(lhs: WeakDictionaryReference, rhs: WeakDictionaryReference) -> Bool {
-        return lhs.key == rhs.key
-    }
-    
-    public static func <(lhs: WeakDictionaryReference, rhs: WeakDictionaryReference) -> Bool {
-        return lhs.key < rhs.key
-    }
-    
-    public static func <=(lhs: WeakDictionaryReference, rhs: WeakDictionaryReference) -> Bool {
-        return lhs.key <= rhs.key
-    }
-    
-    public static func >=(lhs: WeakDictionaryReference, rhs: WeakDictionaryReference) -> Bool {
-        return lhs.key >= rhs.key
-    }
-    
-    public static func >(lhs: WeakDictionaryReference, rhs: WeakDictionaryReference) -> Bool {
-        return lhs.key > rhs.key
-    }
 }
 

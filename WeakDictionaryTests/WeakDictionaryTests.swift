@@ -42,4 +42,17 @@ class WeakDictionaryTests: XCTestCase {
         XCTAssert(weakDictionary.count == 0, "Expected to be left holding no references \(weakDictionary.count)")
     }
     
+    func testReaping() {
+        var s: Sock? = Sock()
+        weakDictionary["avalue"] = s
+        XCTAssert(weakDictionary.count == 1, "Expected to be left holding an empty reference \(weakDictionary.count)")
+        
+        var reaped = weakDictionary.reapedDictionary()
+        XCTAssert(reaped.count == 1, "Expected to be left holding a single reference \(reaped.count)")
+        
+        s = nil
+        reaped = weakDictionary.reapedDictionary()
+        XCTAssert(reaped.count == 0, "Expected to be left holding no references \(reaped.count)")
+    }
+    
 }
