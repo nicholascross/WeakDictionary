@@ -10,15 +10,15 @@ import Foundation
 
 public struct WeakDictionary<Key : Hashable & Comparable, Value : AnyObject> : Collection {
     
-    public typealias Index = DictionaryIndex<Key, WeakDictionaryIndex<Key, Value>>
+    public typealias Index = DictionaryIndex<Key, WeakDictionaryReference<Key, Value>>
     
-    private var storage: Dictionary<Key, WeakDictionaryIndex<Key, Value>>
+    private var storage: Dictionary<Key, WeakDictionaryReference<Key, Value>>
     
     public init() {
-        storage = Dictionary<Key, WeakDictionaryIndex<Key, Value>>()
+        storage = Dictionary<Key, WeakDictionaryReference<Key, Value>>()
     }
     
-    private init(withStorage s: Dictionary<Key, WeakDictionaryIndex<Key, Value>>) {
+    private init(withStorage s: Dictionary<Key, WeakDictionaryReference<Key, Value>>) {
         storage = s
     }
     
@@ -34,7 +34,7 @@ public struct WeakDictionary<Key : Hashable & Comparable, Value : AnyObject> : C
         return storage.index(after: i)
     }
     
-    public subscript(position: Index) -> WeakDictionaryIndex<Key, Value> {
+    public subscript(position: Index) -> WeakDictionaryReference<Key, Value> {
         get {
             let v = storage.values[position]
             return v
@@ -56,7 +56,7 @@ public struct WeakDictionary<Key : Hashable & Comparable, Value : AnyObject> : C
                 return
             }
             
-            storage[key] = WeakDictionaryIndex<Key, Value>(key: key, value: value)
+            storage[key] = WeakDictionaryReference<Key, Value>(key: key, value: value)
         }
     }
     
@@ -69,27 +69,27 @@ public struct WeakDictionary<Key : Hashable & Comparable, Value : AnyObject> : C
     
 }
 
-public struct WeakDictionaryIndex<Key : Hashable & Comparable, Value : AnyObject> : Comparable {
+public struct WeakDictionaryReference<Key : Hashable & Comparable, Value : AnyObject> : Comparable {
     fileprivate let key: Key
     fileprivate weak var value: Value?
     
-    public static func ==(lhs: WeakDictionaryIndex, rhs: WeakDictionaryIndex) -> Bool {
+    public static func ==(lhs: WeakDictionaryReference, rhs: WeakDictionaryReference) -> Bool {
         return lhs.key == rhs.key
     }
     
-    public static func <(lhs: WeakDictionaryIndex, rhs: WeakDictionaryIndex) -> Bool {
+    public static func <(lhs: WeakDictionaryReference, rhs: WeakDictionaryReference) -> Bool {
         return lhs.key < rhs.key
     }
     
-    public static func <=(lhs: WeakDictionaryIndex, rhs: WeakDictionaryIndex) -> Bool {
+    public static func <=(lhs: WeakDictionaryReference, rhs: WeakDictionaryReference) -> Bool {
         return lhs.key <= rhs.key
     }
     
-    public static func >=(lhs: WeakDictionaryIndex, rhs: WeakDictionaryIndex) -> Bool {
+    public static func >=(lhs: WeakDictionaryReference, rhs: WeakDictionaryReference) -> Bool {
         return lhs.key >= rhs.key
     }
     
-    public static func >(lhs: WeakDictionaryIndex, rhs: WeakDictionaryIndex) -> Bool {
+    public static func >(lhs: WeakDictionaryReference, rhs: WeakDictionaryReference) -> Bool {
         return lhs.key > rhs.key
     }
 }
