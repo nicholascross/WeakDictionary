@@ -3,7 +3,9 @@ Naive (strong key/weak value) dictionary &amp; (weak key/weak value) dictionary 
 
 ## WeakDictionary
 * Values stored in the `WeakDictionary` are not retained
-* `reapedDictionary` will create a new `WeakKeyDictionary` with any orphaned value references removed
+* Keys must implement the `Hashable` protocol
+* `reapedDictionary` will create a new `WeakDictionary` with any orphaned value references removed
+* `reap` will remove any orphaned value references for mutable dictionaries
 ```swift
 class Shoe {
 
@@ -25,6 +27,7 @@ print("foot has \(dictionary["foot"] != nil ? "a shoe" : "no shoe!")")
 * Keys & values stored in the `WeakKeyDictionary` are not retained
 * Keys must implement the `Hashable` protocol
 * `reapedDictionary` will create a new `WeakKeyDictionary` with any orphaned key or value references removed
+* `reap` will remove any orphaned key or value references for mutable dictionaries
 ```swift
 class Foot : Hashable {
     let footName : String
