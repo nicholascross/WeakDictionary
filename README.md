@@ -5,14 +5,18 @@ Naive (strong key/weak value) dictionary &amp; (weak key/weak value) dictionary 
 * Values stored in the `WeakDictionary` are not retained
 * `reapedDictionary` will create a new `WeakKeyDictionary` with any orphaned value references removed
 ```swift
+class Shoe {
+
+}
+        
 var dictionary = WeakDictionary<String, Shoe>()
 var shoe: Shoe? = Shoe()
 dictionary["foot"] = shoe
-
+        
 print("foot has \(dictionary["foot"] != nil ? "a shoe" : "no shoe")")
 //prints: foot has a shoe
-
-s = nil
+        
+shoe = nil
 print("foot has \(dictionary["foot"] != nil ? "a shoe" : "no shoe!")")
 //prints: foot has no shoe!
 ```
