@@ -49,8 +49,4 @@ f = nil
 let e = Foot(name: "Left")
 print("\(f != nil ? "foot" : "nil") has \(dictionary[e] != nil ? "a sock" : "no sock")")        
 //prints: nil has no sock
-
-s = nil
-print("\(f != nil ? "foot" : "nil") has \(dictionary[e] != nil ? "a sock" : "no sock")")        
-//prints: nil has no sock
 ```
