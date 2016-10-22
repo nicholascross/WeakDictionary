@@ -1,4 +1,6 @@
 # WeakDictionary
+![build status](https://travis-ci.org/nicholascross/WeakDictionary.svg?branch=master)
+
 Naive (strong key/weak value) dictionary &amp; (weak key/weak value) dictionary implementations in swift
 
 ## WeakDictionary
