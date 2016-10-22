@@ -76,7 +76,7 @@ public struct WeakDictionary<Key : Hashable, Value : AnyObject> : Collection {
     }
 }
 
-public struct WeakKeyDictionary<Key : AnyObject & Identifiable, Value : AnyObject> : Collection {
+public struct WeakKeyDictionary<Key : AnyObject & Hashable, Value : AnyObject> : Collection {
     public typealias Index = DictionaryIndex<WeakDictionaryKey<Key>, WeakDictionaryReference<Value>>
     
     private var storage: WeakDictionary<WeakDictionaryKey<Key>, Value>
@@ -139,26 +139,24 @@ public struct WeakDictionaryReference<Value : AnyObject> {
     fileprivate weak var value: Value?
 }
 
-public struct WeakDictionaryKey<Key : AnyObject & Identifiable> : Hashable {
+private let nilKeyHash = UUID().hashValue
 
+public struct WeakDictionaryKey<Key : AnyObject & Hashable> : Hashable {
+    
     fileprivate weak var baseKey: Key?
-    private let identity: Key.Identity
+    private let hash: Int
+    
     
     public init(key: Key) {
         baseKey = key
-        identity = key.identifier()
+        hash = key.hashValue
     }
     
     public static func ==(lhs: WeakDictionaryKey, rhs: WeakDictionaryKey) -> Bool {
-        return lhs.identity == rhs.identity
+        return lhs.baseKey == rhs.baseKey
     }
     
     public var hashValue: Int {
-        return identity.hashValue
+        return baseKey != nil ? hash : nilKeyHash
     }
-}
-
-public protocol Identifiable {
-    associatedtype Identity: Hashable
-    func identifier() -> Identity
 }
