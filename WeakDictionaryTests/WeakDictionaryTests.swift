@@ -55,4 +55,20 @@ class WeakDictionaryTests: XCTestCase {
         XCTAssert(reaped.count == 0, "Expected to be left holding no references \(reaped.count)")
     }
     
+    func testReadmeExample() {
+        class Shoe {
+            
+        }
+        
+        var dictionary = WeakDictionary<String, Shoe>()
+        var shoe: Shoe? = Shoe()
+        dictionary["foot"] = shoe
+        
+        print("foot has \(dictionary["foot"] != nil ? "a shoe" : "no shoe")")
+        //prints: foot has a shoe
+        
+        shoe = nil
+        print("foot has \(dictionary["foot"] != nil ? "a shoe" : "no shoe!")")
+        //prints: foot has no shoe!
+    }
 }

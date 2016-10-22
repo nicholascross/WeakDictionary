@@ -98,7 +98,28 @@ class WeakKeyDictionaryTests: XCTestCase {
         reaped = weakDictionary.reapedDictionary()
         XCTAssert(reaped.count == 0, "Expected to be left holding no references \(reaped.count)")
     }
-    
+ 
+    func testReadmeExample() {
+        var dictionary = WeakKeyDictionary<Foot, Sock>()
+        var f: Foot? = Foot(name: "Left")
+        let s: Sock? = Sock()
+        dictionary[f!] = s
+        print("\(f != nil ? "foot" : "nil") has \(dictionary[f!] != nil ? "a sock" : "no sock")")
+        //prints: foot has a sock
+        
+        f = nil
+        let e = Foot(name: "Left")
+        print("\(f != nil ? "foot" : "nil") has \(dictionary[e] != nil ? "a sock" : "no sock")")        
+        //prints: nil has no sock
+        
+        print("number of item in dictionary \(dictionary.count)")
+        //prints: number of item in dictionary 1
+        //This is because nil key/value references are not automatically nullified when the key or value is deallocated
+        
+        print("number of item in reaped dictionary \(dictionary.reapedDictionary().count)")
+        //prints: number of item in reaped dictionary 0
+        //Reaping the dictionary removes any keys without values and values not referenced by any key
+    }
 }
 
 class Foot : Hashable {
