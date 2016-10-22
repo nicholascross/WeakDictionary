@@ -5,7 +5,7 @@ Naive (strong key/weak value) dictionary &amp; (weak key/weak value) dictionary 
 * Values stored in the `WeakDictionary` are not retained
 * `reapedDictionary` will create a new `WeakKeyDictionary` with any orphaned value references removed
 ```swift
-let dictionary = WeakDictionary<String, Shoe>()
+var dictionary = WeakDictionary<String, Shoe>()
 var shoe: Shoe? = Shoe()
 dictionary["foot"] = shoe
 
@@ -38,15 +38,23 @@ class Foot : Hashable {
     }
 }
 
-let dictionary = WeakKeyDictionary<Foot, Sock>()
+var dictionary = WeakKeyDictionary<Foot, Sock>()
 var f: Foot? = Foot(name: "Left")
-var s: Sock? = Sock()
+let s: Sock? = Sock()
 dictionary[f!] = s
-print("\(f != nil ? "foot" : "nil") has \(dictionary[f!] != nil ? "a sock" : "no sock")")        
+print("\(f != nil ? "foot" : "nil") has \(dictionary[f!] != nil ? "a sock" : "no sock")")
 //prints: foot has a sock
-
+        
 f = nil
 let e = Foot(name: "Left")
 print("\(f != nil ? "foot" : "nil") has \(dictionary[e] != nil ? "a sock" : "no sock")")        
 //prints: nil has no sock
+        
+print("number of item in dictionary \(dictionary.count)")
+//prints: number of item in dictionary 1
+//This is because nil key/value references are not automatically nullified when the key or value is deallocated
+        
+print("number of item in reaped dictionary \(dictionary.reapedDictionary().count)")
+//prints: number of item in reaped dictionary 0
+//Reaping the dictionary removes any keys without values and values not referenced by any key
 ```
