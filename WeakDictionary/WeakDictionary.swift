@@ -74,6 +74,10 @@ public struct WeakDictionary<Key : Hashable, Value : AnyObject> : Collection {
     public func reapedDictionary() -> WeakDictionary<Key, Value> {
         return self[startIndex ..< endIndex]
     }
+    
+    public mutating func reap() {
+        storage = reapedDictionary().storage
+    }
 }
 
 public struct WeakKeyDictionary<Key : AnyObject & Hashable, Value : AnyObject> : Collection {
@@ -132,7 +136,10 @@ public struct WeakKeyDictionary<Key : AnyObject & Hashable, Value : AnyObject> :
     public func reapedDictionary() -> WeakKeyDictionary<Key, Value> {
         return self[startIndex ..< endIndex]
     }
-
+    
+    public mutating func reap() {
+        storage = reapedDictionary().storage
+    }
 }
 
 public struct WeakDictionaryReference<Value : AnyObject> {
