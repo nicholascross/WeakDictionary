@@ -3,5 +3,8 @@ os:
 language: swift
 osx_image: xcode8
 script:
-  - xcodebuild -scheme WeakDictionary -project WeakDictionary.xcodeproj -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 6S,OS=9.0' build test
-  - xcodebuild -scheme WeakDictionary -project WeakDictionary.xcodeproj -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 6S,OS=10.0' build test
+  - xcodebuild -scheme WeakDictionary-iOS -project WeakDictionary.xcodeproj -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 6S,OS=9.0' build test
+  - xcodebuild -scheme WeakDictionary-iOS -project WeakDictionary.xcodeproj -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 6S,OS=10.0' build test
+  - xcodebuild -scheme WeakDictionary-tvOS -project WeakDictionary.xcodeproj -sdk appletvsimulator -destination 'platform=tvOS Simulator,name=Apple TV 1080p,OS=10.0' build test
+  - xcodebuild -scheme WeakDictionary-macOS -project WeakDictionary.xcodeproj build test
+  - xcodebuild -scheme WeakDictionary-watchOS -project WeakDictionary.xcodeproj build
