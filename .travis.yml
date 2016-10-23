@@ -3,4 +3,5 @@ os:
 language: swift
 osx_image: xcode8
 script:
+  - xcodebuild -scheme WeakDictionary -project WeakDictionary.xcodeproj -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 6S,OS=9.0' build test
   - xcodebuild -scheme WeakDictionary -project WeakDictionary.xcodeproj -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 6S,OS=10.0' build test
