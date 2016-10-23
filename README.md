@@ -1,5 +1,10 @@
 # WeakDictionary
 ![build status](https://travis-ci.org/nicholascross/WeakDictionary.svg?branch=master)
+[![carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage) 
+[![CocoaPods compatible](https://img.shields.io/cocoapods/v/WeakDictionary.svg)](https://cocoapods.org/pods/ReactiveCocoa) 
+[![GitHub release](https://img.shields.io/github/release/nicholascross/WeakDictionary.svg)](https://github.com/ReactiveCocoa/ReactiveCocoa/releases) 
+![Swift 3.0.x](https://img.shields.io/badge/Swift-3.0.x-orange.svg) 
+![platforms](https://img.shields.io/badge/platforms-iOS%20%7C%20OS%20X%20%7C%20watchOS%20%7C%20tvOS%20-lightgrey.svg)
 
 Naive (strong key/weak value) dictionary &amp; (weak key/weak value) dictionary implementations in swift
 
