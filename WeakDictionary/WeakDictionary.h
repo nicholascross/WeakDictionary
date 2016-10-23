@@ -6,7 +6,7 @@
 //  Copyright © 2016 Nicholas Cross. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
 
 //! Project version number for WeakDictionary.
 FOUNDATION_EXPORT double WeakDictionaryVersionNumber;
