@@ -8,3 +8,6 @@ script:
   - xcodebuild -scheme WeakDictionary-tvOS -project WeakDictionary.xcodeproj -sdk appletvsimulator -destination 'platform=tvOS Simulator,name=Apple TV 1080p,OS=10.0' build test
   - xcodebuild -scheme WeakDictionary-macOS -project WeakDictionary.xcodeproj build test
   - xcodebuild -scheme WeakDictionary-watchOS -project WeakDictionary.xcodeproj build
+  - gem install cocoapods
+  - pod repo update --silent
+  - pod lib lint --allow-warnings

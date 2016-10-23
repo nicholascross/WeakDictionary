@@ -1,8 +1,8 @@
 
 Pod::Spec.new do |s|
 
-  s.name         = "Weak Dictionary"
-  s.version      = "1.0.1"
+  s.name         = "WeakDictionary"
+  s.version      = "1.0.2"
   s.summary      = "naive (strong key/weak value) dictionary & (weak key/weak value) dictionary implementations in swift"
   s.homepage     = "https://github.com/nicholascross/WeakDictionary"
   s.license      = 'MIT'
