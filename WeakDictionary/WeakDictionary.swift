@@ -81,16 +81,19 @@ public struct WeakDictionary<Key : Hashable, Value : AnyObject> : Collection {
 }
 
 public struct WeakKeyDictionary<Key : AnyObject & Hashable, Value : AnyObject> : Collection {
-    public typealias Index = DictionaryIndex<WeakDictionaryKey<Key>, WeakDictionaryReference<Value>>
+    public typealias Index = DictionaryIndex<WeakDictionaryKey<Key, Value>, WeakDictionaryReference<Value>>
     
-    private var storage: WeakDictionary<WeakDictionaryKey<Key>, Value>
+    private var storage: WeakDictionary<WeakDictionaryKey<Key, Value>, Value>
+    private let isValueRetainedByKey: Bool
     
-    public init() {
-        storage = WeakDictionary<WeakDictionaryKey<Key>, Value>()
+    public init(withValuesRetainedByKey retainValues: Bool = false) {
+        storage = WeakDictionary<WeakDictionaryKey<Key, Value>, Value>()
+        isValueRetainedByKey = retainValues
     }
     
-    private init(withStorage s: WeakDictionary<WeakDictionaryKey<Key>, Value>) {
+    private init(withStorage s: WeakDictionary<WeakDictionaryKey<Key, Value>, Value>, withValuesRetainedByKey retainValues: Bool = false) {
         storage = s
+        isValueRetainedByKey = retainValues
     }
     
     public var startIndex : Index {
@@ -105,7 +108,7 @@ public struct WeakKeyDictionary<Key : AnyObject & Hashable, Value : AnyObject> :
         return storage.index(after: i)
     }
     
-    public subscript(position: Index) -> (WeakDictionaryKey<Key>, WeakDictionaryReference<Value>) {
+    public subscript(position: Index) -> (WeakDictionaryKey<Key, Value>, WeakDictionaryReference<Value>) {
         get {
             return storage[position]
         }
@@ -113,17 +116,19 @@ public struct WeakKeyDictionary<Key : AnyObject & Hashable, Value : AnyObject> :
     
     public subscript(key: Key) -> Value? {
         get {
-            return storage[WeakDictionaryKey<Key>(key: key)]
+            return storage[WeakDictionaryKey<Key, Value>(key: key)]
         }
         
         set {
-            storage[WeakDictionaryKey<Key>(key: key)] = newValue
+            let retainedValue = isValueRetainedByKey ? newValue : nil
+            let weakKey = WeakDictionaryKey<Key, Value>(key: key, value: retainedValue)
+            storage[weakKey] = newValue
         }
     }
     
     public subscript(bounds: Range<Index>) -> WeakKeyDictionary<Key, Value> {
         let subStorage = storage[bounds.lowerBound ..< bounds.upperBound]
-        var newStorage = WeakDictionary<WeakDictionaryKey<Key>, Value>()
+        var newStorage = WeakDictionary<WeakDictionaryKey<Key, Value>, Value>()
         
         subStorage.filter({ key, value in return key.baseKey != nil && value.value != nil }).forEach({
             key, value in
@@ -148,14 +153,15 @@ public struct WeakDictionaryReference<Value : AnyObject> {
 
 private let nilKeyHash = UUID().hashValue
 
-public struct WeakDictionaryKey<Key : AnyObject & Hashable> : Hashable {
+public struct WeakDictionaryKey<Key : AnyObject & Hashable, Value : AnyObject> : Hashable {
     
     fileprivate weak var baseKey: Key?
     private let hash: Int
+    private var retainedValue: Value?
     
-    
-    public init(key: Key) {
+    public init(key: Key, value: Value? = nil) {
         baseKey = key
+        retainedValue = value
         hash = key.hashValue
     }
     
