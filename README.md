@@ -35,6 +35,7 @@ print("foot has \(dictionary["foot"] != nil ? "a shoe" : "no shoe!")")
 * Keys must implement the `Hashable` protocol
 * `reapedDictionary` will create a new `WeakKeyDictionary` with any orphaned key or value references removed
 * `reap` will remove any orphaned key or value references for mutable dictionaries
+* Optionally values may be retained by the key; values will be released only after key references are reaped
 ```swift
 class Foot : Hashable {
     let footName : String
