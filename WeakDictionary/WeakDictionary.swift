@@ -130,7 +130,7 @@ public struct WeakKeyDictionary<Key : AnyObject & Hashable, Value : AnyObject> :
         let subStorage = storage[bounds.lowerBound ..< bounds.upperBound]
         var newStorage = WeakDictionary<WeakDictionaryKey<Key, Value>, Value>()
         
-        subStorage.filter({ key, value in return key.baseKey != nil && value.value != nil }).forEach({
+        subStorage.filter({ key, value in return key.key != nil && value.value != nil }).forEach({
             key, value in
             newStorage[key] = value.value
         })
@@ -148,14 +148,24 @@ public struct WeakKeyDictionary<Key : AnyObject & Hashable, Value : AnyObject> :
 }
 
 public struct WeakDictionaryReference<Value : AnyObject> {
-    fileprivate weak var value: Value?
+    private weak var referencedValue: Value?
+    
+    fileprivate init(value: Value) {
+        referencedValue = value
+    }
+    
+    public var value: Value? {
+        get {
+            return referencedValue
+        }
+    }
 }
 
 private let nilKeyHash = UUID().hashValue
 
 public struct WeakDictionaryKey<Key : AnyObject & Hashable, Value : AnyObject> : Hashable {
     
-    fileprivate weak var baseKey: Key?
+    private weak var baseKey: Key?
     private let hash: Int
     private var retainedValue: Value?
     
@@ -171,5 +181,11 @@ public struct WeakDictionaryKey<Key : AnyObject & Hashable, Value : AnyObject> :
     
     public var hashValue: Int {
         return baseKey != nil ? hash : nilKeyHash
+    }
+    
+    public var key: Key? {
+        get {
+            return baseKey
+        }
     }
 }
