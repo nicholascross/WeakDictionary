@@ -120,6 +120,36 @@ class WeakKeyDictionaryTests: XCTestCase {
         weakDictionary.reap()
         XCTAssert(weakDictionary.count == 0, "Expected to be left holding nil references \(weakDictionary.count)")
     }
+    
+    func testStrongification() {
+        let f: Foot = Foot(name: "Left")
+        var s: Sock? = Sock()
+        weakDictionary[f] = s
+        XCTAssert(weakDictionary.count == 1, "Expected to be left holding an empty reference \(weakDictionary.count)")
+        
+        var reaped = weakDictionary.reapedDictionary()
+        XCTAssert(reaped.count == 1, "Expected to be left holding a single reference \(reaped.count)")
+        
+        var strongDictionary: [Foot: Sock]? = weakDictionary.toStrongDictionary()
+        XCTAssert(strongDictionary?.count == 1, "Expected to be holding a single key value pair")
+        
+        s = nil
+        reaped = weakDictionary.reapedDictionary()
+        XCTAssert(reaped.count == 1, "Expected to be left holding a single reference \(reaped.count)")
+        
+        weak var weakSock: Sock? = strongDictionary?[f]
+        XCTAssert(weakSock != nil, "Expected to find sock in strong dictionary")
+        
+        strongDictionary = nil
+        reaped = weakDictionary.reapedDictionary()
+        XCTAssert(reaped.count == 0, "Expected unreferenced values to be released \(reaped.count)")
+        
+        s = Sock()
+        weakDictionary[f] = s
+        s = nil
+        XCTAssert(weakDictionary.count == 1, "Expected to be holding an empty value reference")
+        XCTAssert(weakDictionary.toStrongDictionary().count == 0, "Expected empty references to be ignored")
+    }
  
     func testReadmeExample() {
         var dictionary = WeakKeyDictionary<Foot, Sock>()

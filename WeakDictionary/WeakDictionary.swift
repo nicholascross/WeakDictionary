@@ -78,6 +78,19 @@ public struct WeakDictionary<Key : Hashable, Value : AnyObject> : Collection {
     public mutating func reap() {
         storage = reapedDictionary().storage
     }
+    
+    public func toStrongDictionary() -> [Key:Value] {
+        var newStorage = Dictionary<Key, Value>()
+        
+        storage.forEach({
+            key, value in
+            if let v = value.value {
+                newStorage[key] = v
+            }
+        })
+        
+        return newStorage
+    }
 }
 
 public struct WeakKeyDictionary<Key : AnyObject & Hashable, Value : AnyObject> : Collection {
@@ -144,6 +157,19 @@ public struct WeakKeyDictionary<Key : AnyObject & Hashable, Value : AnyObject> :
     
     public mutating func reap() {
         storage = reapedDictionary().storage
+    }
+    
+    public func toStrongDictionary() -> [Key:Value] {
+        var newStorage = Dictionary<Key, Value>()
+        
+        storage.forEach({
+            key, value in
+            if let k = key.key, let v = value.value {
+                newStorage[k] = v
+            }
+        })
+        
+        return newStorage
     }
 }
 
