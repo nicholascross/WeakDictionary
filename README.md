@@ -1,5 +1,6 @@
 # WeakDictionary
 ![build status](https://travis-ci.org/nicholascross/WeakDictionary.svg?branch=master)
+![code coverage](https://img.shields.io/codecov/c/github/nicholascross/WeakDictionary.svg)
 [![carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage) 
 [![CocoaPods compatible](https://img.shields.io/cocoapods/v/WeakDictionary.svg)](https://cocoapods.org/pods/WeakDictionary) 
 [![GitHub release](https://img.shields.io/github/release/nicholascross/WeakDictionary.svg)](https://github.com/nicholascross/WeakDictionary/releases) 
