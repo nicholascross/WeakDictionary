@@ -97,6 +97,22 @@ class WeakDictionaryTests: XCTestCase {
         XCTAssert(weakDictionary.toStrongDictionary().count == 0, "Expected empty references to be ignored")
     }
     
+    func testInitWithDictionary() {
+        var strongDict: [String:Sock]? = [
+            "Left" : Sock(),
+            "Right" : Sock()
+        ]
+        
+        weakDictionary = WeakDictionary<String, Sock>(dictionary: strongDict!)
+        XCTAssert(weakDictionary.count == 2, "Expected dictionary to be initialised with two references")
+        
+        let s = weakDictionary["Left"]
+        XCTAssert(s != nil,"Expected value to be available for key")
+        
+        strongDict = nil
+        weakDictionary.reap()
+        XCTAssert(weakDictionary.count == 1, "Expected nullified weak references to be reaped")
+    }
     
     func testReadmeExample() {
         class Shoe {

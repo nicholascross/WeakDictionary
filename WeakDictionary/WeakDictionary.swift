@@ -18,6 +18,12 @@ public struct WeakDictionary<Key : Hashable, Value : AnyObject> : Collection {
         storage = Dictionary<Key, WeakDictionaryReference<Value>>()
     }
     
+    public init(dictionary: [Key : Value]) {
+        var newStorage = Dictionary<Key, WeakDictionaryReference<Value>>()
+        dictionary.forEach({ key, value in newStorage[key] = WeakDictionaryReference<Value>(value: value) })
+        storage = newStorage
+    }
+    
     private init(withStorage s: Dictionary<Key, WeakDictionaryReference<Value>>) {
         storage = s
     }
@@ -101,6 +107,29 @@ public struct WeakKeyDictionary<Key : AnyObject & Hashable, Value : AnyObject> :
     
     public init(withValuesRetainedByKey retainValues: Bool = false) {
         storage = WeakDictionary<WeakDictionaryKey<Key, Value>, Value>()
+        isValueRetainedByKey = retainValues
+    }
+    
+    public init(dictionary: [Key : Value], withValuesRetainedByKey retainValues: Bool = false) {
+        var newStorage = WeakDictionary<WeakDictionaryKey<Key, Value>, Value>()
+        
+        dictionary.forEach({
+            key, value in
+            
+            var keyRef: WeakDictionaryKey<Key, Value>!
+            
+            if !retainValues {
+                keyRef = WeakDictionaryKey<Key, Value>(key: key)
+            }
+            else {
+                keyRef = WeakDictionaryKey<Key, Value>(key: key, value: value)
+            }
+            
+            
+            newStorage[keyRef] = value
+        })
+        
+        storage = newStorage
         isValueRetainedByKey = retainValues
     }
     
