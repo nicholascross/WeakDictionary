@@ -281,6 +281,22 @@ class WeakKeyDictionaryTests: XCTestCase {
             }
         }
     }
+    
+    func testWeakKeyIdentityDictionaryLookUpPerformance() {
+        let (iterations, baselineKeys) = createTestData()
+        
+        var baseline = WeakKeyDictionary<Foot,Foot>(useEquality: false)
+        for i in 0..<iterations {
+            baseline[baselineKeys[i]] = Foot(name:"asdf")
+        }
+        
+        measure {
+            for i in 0..<iterations {
+                let _ = baseline[baselineKeys[i]]
+            }
+        }
+    }
+
 }
 
 class Foot : Hashable {

@@ -104,13 +104,15 @@ public struct WeakKeyDictionary<Key : AnyObject & Hashable, Value : AnyObject> :
     
     private var storage: WeakDictionary<WeakDictionaryKey<Key, Value>, Value>
     private let isValueRetainedByKey: Bool
+    private let useEqualityComparison: Bool
     
-    public init(withValuesRetainedByKey retainValues: Bool = false) {
+    public init(withValuesRetainedByKey retainValues: Bool = false, useEquality: Bool = true) {
         storage = WeakDictionary<WeakDictionaryKey<Key, Value>, Value>()
         isValueRetainedByKey = retainValues
+        useEqualityComparison = useEquality
     }
     
-    public init(dictionary: [Key : Value], withValuesRetainedByKey retainValues: Bool = false) {
+    public init(dictionary: [Key : Value], withValuesRetainedByKey retainValues: Bool = false, useEquality: Bool = true) {
         var newStorage = WeakDictionary<WeakDictionaryKey<Key, Value>, Value>()
         
         dictionary.forEach({
@@ -119,10 +121,10 @@ public struct WeakKeyDictionary<Key : AnyObject & Hashable, Value : AnyObject> :
             var keyRef: WeakDictionaryKey<Key, Value>!
             
             if !retainValues {
-                keyRef = WeakDictionaryKey<Key, Value>(key: key)
+                keyRef = WeakDictionaryKey<Key, Value>(key: key, useEquality: useEquality)
             }
             else {
-                keyRef = WeakDictionaryKey<Key, Value>(key: key, value: value)
+                keyRef = WeakDictionaryKey<Key, Value>(key: key, value: value, useEquality: useEquality)
             }
             
             
@@ -131,11 +133,13 @@ public struct WeakKeyDictionary<Key : AnyObject & Hashable, Value : AnyObject> :
         
         storage = newStorage
         isValueRetainedByKey = retainValues
+        useEqualityComparison = useEquality
     }
     
-    private init(withStorage s: WeakDictionary<WeakDictionaryKey<Key, Value>, Value>, withValuesRetainedByKey retainValues: Bool = false) {
+    private init(withStorage s: WeakDictionary<WeakDictionaryKey<Key, Value>, Value>, withValuesRetainedByKey retainValues: Bool = false, useEquality: Bool) {
         storage = s
         isValueRetainedByKey = retainValues
+        useEqualityComparison = useEquality
     }
     
     public var startIndex : Index {
@@ -158,12 +162,12 @@ public struct WeakKeyDictionary<Key : AnyObject & Hashable, Value : AnyObject> :
     
     public subscript(key: Key) -> Value? {
         get {
-            return storage[WeakDictionaryKey<Key, Value>(key: key)]
+            return storage[WeakDictionaryKey<Key, Value>(key: key, useEquality: useEqualityComparison)]
         }
         
         set {
             let retainedValue = isValueRetainedByKey ? newValue : nil
-            let weakKey = WeakDictionaryKey<Key, Value>(key: key, value: retainedValue)
+            let weakKey = WeakDictionaryKey<Key, Value>(key: key, value: retainedValue, useEquality: useEqualityComparison)
             storage[weakKey] = newValue
         }
     }
@@ -177,7 +181,7 @@ public struct WeakKeyDictionary<Key : AnyObject & Hashable, Value : AnyObject> :
             newStorage[key] = value.value
         })
         
-        return WeakKeyDictionary<Key, Value>(withStorage: newStorage)
+        return WeakKeyDictionary<Key, Value>(withStorage: newStorage, useEquality: useEqualityComparison)
     }
     
     public func reapedDictionary() -> WeakKeyDictionary<Key, Value> {
@@ -223,15 +227,17 @@ public struct WeakDictionaryKey<Key : AnyObject & Hashable, Value : AnyObject> :
     private weak var baseKey: Key?
     private let hash: Int
     private var retainedValue: Value?
+    private let useEqualityComparison: Bool
     
-    public init(key: Key, value: Value? = nil) {
+    public init(key: Key, value: Value? = nil, useEquality: Bool) {
         baseKey = key
         retainedValue = value
         hash = key.hashValue
+        useEqualityComparison = useEquality
     }
     
     public static func ==(lhs: WeakDictionaryKey, rhs: WeakDictionaryKey) -> Bool {
-        return lhs.baseKey == rhs.baseKey
+        return lhs.useEqualityComparison || rhs.useEqualityComparison ? lhs.baseKey == rhs.baseKey :  lhs.baseKey === rhs.baseKey
     }
     
     public var hashValue: Int {
