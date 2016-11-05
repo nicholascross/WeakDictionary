@@ -48,11 +48,11 @@ public struct WeakDictionary<Key : Hashable, Value : AnyObject> : Collection {
     
     public subscript(key: Key) -> Value? {
         get {
-            guard let index = storage.keys.index(of: key) else {
+            guard let valueRef = storage[key] else {
                 return nil
             }
-
-            return self[index].1.value
+            
+            return valueRef.value
         }
         
         set {

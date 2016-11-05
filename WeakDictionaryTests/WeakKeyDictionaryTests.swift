@@ -190,6 +190,97 @@ class WeakKeyDictionaryTests: XCTestCase {
         //prints: number of item in reaped dictionary 0
         //Reaping the dictionary removes any keys without values and values not referenced by any key
     }
+    
+    func createTestData() -> (Int, [Foot]) {
+        let iterations = 10000
+        
+        var keys = [Foot]()
+        for i in 0..<iterations {
+            keys.append(Foot(name: "foot \(i)"))
+        }
+        
+        return (iterations, keys)
+    }
+    
+    func testBaseLineAssignPerformance() {
+       let (iterations, baselineKeys) = createTestData()
+        
+        var baseline = [Foot: Foot]()
+        measure {
+            for i in 0..<iterations {
+                baseline[baselineKeys[i]] = Foot(name:"asdf")
+            }
+        }
+    }
+    
+    func testWeakDictionaryAssignPerformance() {
+        let (iterations, keys) = createTestData()
+        
+        var weakDict = WeakDictionary<Foot, Foot>()
+        measure {
+            for i in 0..<iterations {
+                weakDict[keys[i]] = Foot(name:"asdf")
+            }
+        }
+    }
+    
+    func testWeakKeyDictionaryAssignPerformance() {
+        let (iterations, keys) = createTestData()
+        
+        var weakDict = WeakKeyDictionary<Foot, Foot>()
+        measure {
+            for i in 0..<iterations {
+                weakDict[keys[i]] = Foot(name:"asdf")
+            }
+        }
+    }
+    
+    func testBaseLineLookUpPerformance() {
+        let (iterations, baselineKeys) = createTestData()
+        
+        var baseline = [Foot: Foot]()
+        for i in 0..<iterations {
+            baseline[baselineKeys[i]] = Foot(name:"asdf")
+        }
+        
+        measure {
+            for i in 0..<iterations {
+                let _ = baseline[baselineKeys[i]]
+            }
+        }
+    }
+    
+    
+    func testWeakDictionaryLookUpPerformance() {
+        let (iterations, baselineKeys) = createTestData()
+        
+        var baseline = WeakDictionary<Foot,Foot>()
+        for i in 0..<iterations {
+            baseline[baselineKeys[i]] = Foot(name:"asdf")
+        }
+        
+        measure {
+            for i in 0..<iterations {
+                let _ = baseline[baselineKeys[i]]
+            }
+        }
+    }
+    
+    
+    func testWeakKeyDictionaryLookUpPerformance() {
+        let (iterations, baselineKeys) = createTestData()
+        
+        var baseline = WeakKeyDictionary<Foot,Foot>()
+        for i in 0..<iterations {
+            baseline[baselineKeys[i]] = Foot(name:"asdf")
+        }
+        
+        measure {
+            for i in 0..<iterations {
+                let _ = baseline[baselineKeys[i]]
+            }
+        }
+    }
 }
 
 class Foot : Hashable {
