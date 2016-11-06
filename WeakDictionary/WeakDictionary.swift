@@ -42,7 +42,7 @@ public struct WeakDictionary<Key : Hashable, Value : AnyObject> : Collection {
     
     public subscript(position: Index) -> (Key, WeakDictionaryReference<Value>) {
         get {
-            return (storage.keys[position], storage.values[position])
+            return storage[position]
         }
     }
     
