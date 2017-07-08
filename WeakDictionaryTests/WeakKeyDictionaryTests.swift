@@ -9,23 +9,39 @@
 import XCTest
 @testable import WeakDictionary
 
-private class Sock {
-    
-}
-
 class WeakKeyDictionaryTests: XCTestCase {
     
-    private var weakDictionary: WeakKeyDictionary<Foot, Sock>!
+    private class Example {
+        
+    }
+    
+    private class Example1 : Hashable {
+        let value : String
+        
+        init(name: String) {
+            value = name
+        }
+        
+        public static func ==(lhs: Example1, rhs: Example1) -> Bool {
+            return lhs.value == rhs.value
+        }
+        
+        public var hashValue: Int {
+            return value.hash
+        }
+    }
+    
+    private var weakDictionary: WeakKeyDictionary<Example1, Example>!
     
     override func setUp() {
         super.setUp()
         
-        weakDictionary = WeakKeyDictionary<Foot, Sock>()
+        weakDictionary = WeakKeyDictionary<Example1, Example>()
     }
     
     func testAssignment() {
-        var f: Foot? = Foot(name: "Left")
-        var s: Sock? = Sock()
+        var f: Example1? = Example1(name: "Left")
+        var s: Example? = Example()
         weakDictionary[f!] = s
         XCTAssert(weakDictionary.count == 1, "Expected to be left holding a reference \(weakDictionary.count)")
         
@@ -35,37 +51,37 @@ class WeakKeyDictionaryTests: XCTestCase {
         s = nil
         XCTAssert(weakDictionary.count == 1, "Expected to be left holding an empty reference \(weakDictionary.count)")
         
-        weak var s2 = weakDictionary[Foot(name: "Left")]
+        weak var s2 = weakDictionary[Example1(name: "Left")]
         XCTAssert(s2 == nil, "Expected key to have no value")
         
-        weakDictionary[Foot(name: "Left")] = nil
+        weakDictionary[Example1(name: "Left")] = nil
         XCTAssert(weakDictionary.count == 0, "Expected to be left holding no references \(weakDictionary.count)")
         
-        f = Foot(name: "Right")
-        s = Sock()
+        f = Example1(name: "Right")
+        s = Example()
         weakDictionary[f!] = s
         XCTAssert(weakDictionary.count == 1, "Expected to be left holding a reference \(weakDictionary.count)")
-
-        s2 = weakDictionary[Foot(name: "Right")]
+        
+        s2 = weakDictionary[Example1(name: "Right")]
         XCTAssert(s2 != nil, "Expected key to have a accessible value")
         
         f = nil
         XCTAssert(weakDictionary.count == 1, "Expected to be left holding a nil reference \(weakDictionary.count)")
         
-        s2 = weakDictionary[Foot(name: "Right")]
+        s2 = weakDictionary[Example1(name: "Right")]
         XCTAssert(s2 == nil, "Expected key to have no accessible value")
         
-        weakDictionary[Foot(name: "Right")] = nil
+        weakDictionary[Example1(name: "Right")] = nil
         XCTAssert(weakDictionary.count == 1, "Expected to be left holding a nil reference \(weakDictionary.count)")
         
-        weakDictionary[Foot(name: "Fleeting")] = Sock()
-        weakDictionary[Foot(name: "Fleeting1")] = Sock()
+        weakDictionary[Example1(name: "Fleeting")] = Example()
+        weakDictionary[Example1(name: "Fleeting1")] = Example()
         XCTAssert(weakDictionary.count == 3, "Expected to be left holding nil references \(weakDictionary.count)")
     }
     
     func testKeyReaping() {
-        var f: Foot? = Foot(name: "Left")
-        let s: Sock = Sock()
+        var f: Example1? = Example1(name: "Left")
+        let s: Example = Example()
         weakDictionary[f!] = s
         XCTAssert(weakDictionary.count == 1, "Expected to be left holding an empty reference \(weakDictionary.count)")
         
@@ -76,18 +92,18 @@ class WeakKeyDictionaryTests: XCTestCase {
         reaped = weakDictionary.reapedDictionary()
         XCTAssert(reaped.count == 0, "Expected to be left holding no references \(reaped.count)")
         
-        reaped[Foot(name: "Fleeting")] = Sock()
-        reaped[Foot(name: "Fleeting1")] = Sock()
-        reaped[Foot(name: "Fleeting2")] = Sock()
-        reaped[Foot(name: "Fleeting3")] = Sock()
-        reaped[Foot(name: "Fleeting4")] = Sock()
+        reaped[Example1(name: "Fleeting")] = Example()
+        reaped[Example1(name: "Fleeting1")] = Example()
+        reaped[Example1(name: "Fleeting2")] = Example()
+        reaped[Example1(name: "Fleeting3")] = Example()
+        reaped[Example1(name: "Fleeting4")] = Example()
         reaped = reaped.reapedDictionary()
         XCTAssert(reaped.count == 0, "Expected to be left holding nil references \(weakDictionary.count)")
     }
     
     func testValueReaping() {
-        let f: Foot = Foot(name: "Left")
-        var s: Sock? = Sock()
+        let f: Example1 = Example1(name: "Left")
+        var s: Example? = Example()
         weakDictionary[f] = s
         XCTAssert(weakDictionary.count == 1, "Expected to be left holding an empty reference \(weakDictionary.count)")
         
@@ -100,8 +116,8 @@ class WeakKeyDictionaryTests: XCTestCase {
     }
     
     func testMutatingReap() {
-        var f: Foot? = Foot(name: "Left")
-        let s: Sock = Sock()
+        var f: Example1? = Example1(name: "Left")
+        let s: Example = Example()
         weakDictionary[f!] = s
         XCTAssert(weakDictionary.count == 1, "Expected to be left holding an empty reference \(weakDictionary.count)")
         
@@ -112,53 +128,53 @@ class WeakKeyDictionaryTests: XCTestCase {
         weakDictionary.reap()
         XCTAssert(weakDictionary.count == 0, "Expected to be left holding no references \(weakDictionary.count)")
         
-        weakDictionary[Foot(name: "Fleeting")] = Sock()
-        weakDictionary[Foot(name: "Fleeting1")] = Sock()
-        weakDictionary[Foot(name: "Fleeting2")] = Sock()
-        weakDictionary[Foot(name: "Fleeting3")] = Sock()
-        weakDictionary[Foot(name: "Fleeting4")] = Sock()
+        weakDictionary[Example1(name: "Fleeting")] = Example()
+        weakDictionary[Example1(name: "Fleeting1")] = Example()
+        weakDictionary[Example1(name: "Fleeting2")] = Example()
+        weakDictionary[Example1(name: "Fleeting3")] = Example()
+        weakDictionary[Example1(name: "Fleeting4")] = Example()
         weakDictionary.reap()
         XCTAssert(weakDictionary.count == 0, "Expected to be left holding nil references \(weakDictionary.count)")
     }
     
     func testStrongification() {
-        let f: Foot = Foot(name: "Left")
-        var s: Sock? = Sock()
+        let f: Example1 = Example1(name: "Left")
+        var s: Example? = Example()
         weakDictionary[f] = s
         XCTAssert(weakDictionary.count == 1, "Expected to be left holding an empty reference \(weakDictionary.count)")
         
         var reaped = weakDictionary.reapedDictionary()
         XCTAssert(reaped.count == 1, "Expected to be left holding a single reference \(reaped.count)")
         
-        var strongDictionary: [Foot: Sock]? = weakDictionary.toStrongDictionary()
+        var strongDictionary: [Example1: Example]? = weakDictionary.toStrongDictionary()
         XCTAssert(strongDictionary?.count == 1, "Expected to be holding a single key value pair")
         
         s = nil
         reaped = weakDictionary.reapedDictionary()
         XCTAssert(reaped.count == 1, "Expected to be left holding a single reference \(reaped.count)")
         
-        weak var weakSock: Sock? = strongDictionary?[f]
-        XCTAssert(weakSock != nil, "Expected to find sock in strong dictionary")
+        weak var weakExample: Example? = strongDictionary?[f]
+        XCTAssert(weakExample != nil, "Expected to find Example in strong dictionary")
         
         strongDictionary = nil
         reaped = weakDictionary.reapedDictionary()
         XCTAssert(reaped.count == 0, "Expected unreferenced values to be released \(reaped.count)")
         
-        s = Sock()
+        s = Example()
         weakDictionary[f] = s
         s = nil
         XCTAssert(weakDictionary.count == 1, "Expected to be holding an empty value reference")
         XCTAssert(weakDictionary.toStrongDictionary().count == 0, "Expected empty references to be ignored")
     }
- 
+    
     func testInitWithDictionary() {
-        let f = Foot(name: "Left")
-        var strongDict: [Foot:Sock]? = [
-            f : Sock(),
-            Foot(name: "Right") : Sock()
+        let f = Example1(name: "Left")
+        var strongDict: [Example1:Example]? = [
+            f : Example(),
+            Example1(name: "Right") : Example()
         ]
         
-        weakDictionary = WeakKeyDictionary<Foot, Sock>(dictionary: strongDict!)
+        weakDictionary = WeakKeyDictionary<Example1, Example>(dictionary: strongDict!)
         XCTAssert(weakDictionary.count == 2, "Expected dictionary to be initialised with two references")
         
         let s = weakDictionary[f]
@@ -170,17 +186,17 @@ class WeakKeyDictionaryTests: XCTestCase {
     }
     
     func testReadmeExample() {
-        var dictionary = WeakKeyDictionary<Foot, Sock>()
-        var f: Foot? = Foot(name: "Left")
-        let s: Sock? = Sock()
+        var dictionary = WeakKeyDictionary<Example1, Example>()
+        var f: Example1? = Example1(name: "value")
+        let s: Example? = Example()
         dictionary[f!] = s
-        print("\(f != nil ? "foot" : "nil") has \(dictionary[f!] != nil ? "a sock" : "no sock")")
-        //prints: foot has a sock
+        print("\(dictionary[f!] != nil ? "an example exits" : "no example exits")")
+        //prints: an example exits
         
         f = nil
-        let e = Foot(name: "Left")
-        print("\(f != nil ? "foot" : "nil") has \(dictionary[e] != nil ? "a sock" : "no sock")")        
-        //prints: nil has no sock
+        let e = Example1(name: "Left")
+        print("\(dictionary[e] != nil ? "an example exits" : "no example exits")")
+        //prints: no example exits
         
         print("number of item in dictionary \(dictionary.count)")
         //prints: number of item in dictionary 1
@@ -191,24 +207,24 @@ class WeakKeyDictionaryTests: XCTestCase {
         //Reaping the dictionary removes any keys without values and values not referenced by any key
     }
     
-    func createTestData() -> (Int, [Foot]) {
+    private func createTestData() -> (Int, [Example1]) {
         let iterations = 10000
         
-        var keys = [Foot]()
+        var keys = [Example1]()
         for i in 0..<iterations {
-            keys.append(Foot(name: "foot \(i)"))
+            keys.append(Example1(name: "Example1 \(i)"))
         }
         
         return (iterations, keys)
     }
     
     func testBaseLineAssignPerformance() {
-       let (iterations, baselineKeys) = createTestData()
+        let (iterations, baselineKeys) = createTestData()
         
-        var baseline = [Foot: Foot]()
+        var baseline = [Example1: Example1]()
         measure {
             for i in 0..<iterations {
-                baseline[baselineKeys[i]] = Foot(name:"asdf")
+                baseline[baselineKeys[i]] = Example1(name:"asdf")
             }
         }
     }
@@ -216,10 +232,10 @@ class WeakKeyDictionaryTests: XCTestCase {
     func testWeakDictionaryAssignPerformance() {
         let (iterations, keys) = createTestData()
         
-        var weakDict = WeakDictionary<Foot, Foot>()
+        var weakDict = WeakDictionary<Example1, Example1>()
         measure {
             for i in 0..<iterations {
-                weakDict[keys[i]] = Foot(name:"asdf")
+                weakDict[keys[i]] = Example1(name:"asdf")
             }
         }
     }
@@ -227,10 +243,10 @@ class WeakKeyDictionaryTests: XCTestCase {
     func testWeakKeyDictionaryAssignPerformance() {
         let (iterations, keys) = createTestData()
         
-        var weakDict = WeakKeyDictionary<Foot, Foot>()
+        var weakDict = WeakKeyDictionary<Example1, Example1>()
         measure {
             for i in 0..<iterations {
-                weakDict[keys[i]] = Foot(name:"asdf")
+                weakDict[keys[i]] = Example1(name:"asdf")
             }
         }
     }
@@ -238,9 +254,9 @@ class WeakKeyDictionaryTests: XCTestCase {
     func testBaseLineLookUpPerformance() {
         let (iterations, baselineKeys) = createTestData()
         
-        var baseline = [Foot: Foot]()
+        var baseline = [Example1: Example1]()
         for i in 0..<iterations {
-            baseline[baselineKeys[i]] = Foot(name:"asdf")
+            baseline[baselineKeys[i]] = Example1(name:"asdf")
         }
         
         measure {
@@ -254,9 +270,9 @@ class WeakKeyDictionaryTests: XCTestCase {
     func testWeakDictionaryLookUpPerformance() {
         let (iterations, baselineKeys) = createTestData()
         
-        var baseline = WeakDictionary<Foot,Foot>()
+        var baseline = WeakDictionary<Example1,Example1>()
         for i in 0..<iterations {
-            baseline[baselineKeys[i]] = Foot(name:"asdf")
+            baseline[baselineKeys[i]] = Example1(name:"asdf")
         }
         
         measure {
@@ -270,9 +286,9 @@ class WeakKeyDictionaryTests: XCTestCase {
     func testWeakKeyDictionaryLookUpPerformance() {
         let (iterations, baselineKeys) = createTestData()
         
-        var baseline = WeakKeyDictionary<Foot,Foot>()
+        var baseline = WeakKeyDictionary<Example1,Example1>()
         for i in 0..<iterations {
-            baseline[baselineKeys[i]] = Foot(name:"asdf")
+            baseline[baselineKeys[i]] = Example1(name:"asdf")
         }
         
         measure {
@@ -280,21 +296,5 @@ class WeakKeyDictionaryTests: XCTestCase {
                 let _ = baseline[baselineKeys[i]]
             }
         }
-    }
-}
-
-class Foot : Hashable {
-    let footName : String
-    
-    init(name: String) {
-        footName = name
-    }
-    
-    public static func ==(lhs: Foot, rhs: Foot) -> Bool {
-        return lhs.footName == rhs.footName
-    }
-    
-    public var hashValue: Int {
-        return footName.hash
     }
 }

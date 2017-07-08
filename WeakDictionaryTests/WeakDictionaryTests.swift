@@ -9,23 +9,23 @@
 import XCTest
 @testable import WeakDictionary
 
-private class Sock {
+private class Example {
     
 }
 
 
 class WeakDictionaryTests: XCTestCase {
     
-    private var weakDictionary: WeakDictionary<String, Sock>!
+    private var weakDictionary: WeakDictionary<String, Example>!
     
     override func setUp() {
         super.setUp()
         
-        weakDictionary = WeakDictionary<String, Sock>()
+        weakDictionary = WeakDictionary<String, Example>()
     }
     
     func testAssignment() {
-        var s: Sock? = Sock()
+        var s: Example? = Example()
         weakDictionary["avalue"] = s
         XCTAssert(weakDictionary.count == 1, "Expected to be left holding a reference \(weakDictionary.count)")
         
@@ -43,7 +43,7 @@ class WeakDictionaryTests: XCTestCase {
     }
     
     func testReaping() {
-        var s: Sock? = Sock()
+        var s: Example? = Example()
         weakDictionary["avalue"] = s
         XCTAssert(weakDictionary.count == 1, "Expected to be left holding an empty reference \(weakDictionary.count)")
         
@@ -56,7 +56,7 @@ class WeakDictionaryTests: XCTestCase {
     }
     
     func testMutatingReap() {
-        var s: Sock? = Sock()
+        var s: Example? = Example()
         weakDictionary["avalue"] = s
         XCTAssert(weakDictionary.count == 1, "Expected to be left holding an empty reference \(weakDictionary.count)")
 
@@ -69,28 +69,28 @@ class WeakDictionaryTests: XCTestCase {
     }
     
     func testStrongification() {
-        var s: Sock? = Sock()
+        var s: Example? = Example()
         weakDictionary["avalue"] = s
         XCTAssert(weakDictionary.count == 1, "Expected to be left holding an empty reference \(weakDictionary.count)")
         
         var reaped = weakDictionary.reapedDictionary()
         XCTAssert(reaped.count == 1, "Expected to be left holding a single reference \(reaped.count)")
         
-        var strongDictionary: [String: Sock]? = weakDictionary.toStrongDictionary()
+        var strongDictionary: [String: Example]? = weakDictionary.toStrongDictionary()
         XCTAssert(strongDictionary?.count == 1, "Expected to be holding a single key value pair")
         
         s = nil
         reaped = weakDictionary.reapedDictionary()
         XCTAssert(reaped.count == 1, "Expected to be left holding a single reference \(reaped.count)")
         
-        weak var weakSock: Sock? = strongDictionary?["avalue"]
+        weak var weakSock: Example? = strongDictionary?["avalue"]
         XCTAssert(weakSock != nil, "Expected to find sock in strong dictionary")
         
         strongDictionary = nil
         reaped = weakDictionary.reapedDictionary()
         XCTAssert(reaped.count == 0, "Expected unreferenced values to be released \(reaped.count)")
         
-        s = Sock()
+        s = Example()
         weakDictionary["avalue"] = s
         s = nil
         XCTAssert(weakDictionary.count == 1, "Expected to be holding an empty value reference")
@@ -98,12 +98,12 @@ class WeakDictionaryTests: XCTestCase {
     }
     
     func testInitWithDictionary() {
-        var strongDict: [String:Sock]? = [
-            "Left" : Sock(),
-            "Right" : Sock()
+        var strongDict: [String:Example]? = [
+            "Left" : Example(),
+            "Right" : Example()
         ]
         
-        weakDictionary = WeakDictionary<String, Sock>(dictionary: strongDict!)
+        weakDictionary = WeakDictionary<String, Example>(dictionary: strongDict!)
         XCTAssert(weakDictionary.count == 2, "Expected dictionary to be initialised with two references")
         
         let s = weakDictionary["Left"]
@@ -115,19 +115,15 @@ class WeakDictionaryTests: XCTestCase {
     }
     
     func testReadmeExample() {
-        class Shoe {
-            
-        }
+        var dictionary = WeakDictionary<String, Example>()
+        var value: Example? = Example()
+        dictionary["key"] = value
         
-        var dictionary = WeakDictionary<String, Shoe>()
-        var shoe: Shoe? = Shoe()
-        dictionary["foot"] = shoe
+        print("\(dictionary["key"] != nil ? "has value" : "value missing")")
+        //prints: has value
         
-        print("foot has \(dictionary["foot"] != nil ? "a shoe" : "no shoe")")
-        //prints: foot has a shoe
-        
-        shoe = nil
-        print("foot has \(dictionary["foot"] != nil ? "a shoe" : "no shoe!")")
-        //prints: foot has no shoe!
+        value = nil
+        print("\(dictionary["key"] != nil ? "has value" : "value missing")")
+        //prints: value missing
     }
 }
