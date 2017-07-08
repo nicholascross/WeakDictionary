@@ -16,6 +16,10 @@ Naive (strong key/weak value) dictionary &amp; (weak key/weak value) dictionary 
 * `reap` will remove any orphaned value references for mutable dictionaries
 * `toStrongDictionary` will create a new swift dictionary excluding any nullified value references
 ```swift
+private class Example {
+
+}
+
 var dictionary = WeakDictionary<String, Example>()
 var value: Example? = Example()
 dictionary["key"] = value
@@ -36,38 +40,42 @@ print("\(dictionary["key"] != nil ? "has value" : "value missing")")
 * Optionally values may be retained by the key using `WeakKeyDictionary(withValuesRetainedByKey: true)`, the values will be released only after key references are reaped
 * `toStrongDictionary` will create a new swift dictionary excluding any nullified key or value references
 ```swift
-class Foot : Hashable {
-    let footName : String
-    
+private class Example {
+
+}
+
+private class Example1 : Hashable {
+    let value : String
+
     init(name: String) {
-        footName = name
+        value = name
     }
-    
-    public static func ==(lhs: Foot, rhs: Foot) -> Bool {
-        return lhs.footName == rhs.footName
+
+    public static func ==(lhs: Example1, rhs: Example1) -> Bool {
+        return lhs.value == rhs.value
     }
-    
+
     public var hashValue: Int {
-        return footName.hash
+        return value.hash
     }
 }
 
-var dictionary = WeakKeyDictionary<Foot, Sock>()
-var f: Foot? = Foot(name: "Left")
-let s: Sock? = Sock()
+var dictionary = WeakKeyDictionary<Example1, Example>()
+var f: Example1? = Example1(name: "value")
+let s: Example? = Example()
 dictionary[f!] = s
-print("\(f != nil ? "foot" : "nil") has \(dictionary[f!] != nil ? "a sock" : "no sock")")
-//prints: foot has a sock
-        
+print("\(dictionary[f!] != nil ? "an example exits" : "no example exits")")
+//prints: an example exits
+
 f = nil
-let e = Foot(name: "Left")
-print("\(f != nil ? "foot" : "nil") has \(dictionary[e] != nil ? "a sock" : "no sock")")        
-//prints: nil has no sock
-        
+let e = Example1(name: "Left")
+print("\(dictionary[e] != nil ? "an example exits" : "no example exits")")
+//prints: no example exits
+
 print("number of item in dictionary \(dictionary.count)")
 //prints: number of item in dictionary 1
 //This is because nil key/value references are not automatically nullified when the key or value is deallocated
-        
+
 print("number of item in reaped dictionary \(dictionary.reapedDictionary().count)")
 //prints: number of item in reaped dictionary 0
 //Reaping the dictionary removes any keys without values and values not referenced by any key
