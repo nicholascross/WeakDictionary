@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0800"
+   LastUpgradeVersion = "0830"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "E1B661FD1DBC530E00F9C758"
-               BuildableName = "WeakDictionary-watchOS.framework"
+               BuildableName = "WeakDictionary.framework"
                BlueprintName = "WeakDictionary-watchOS"
                ReferencedContainer = "container:WeakDictionary.xcodeproj">
             </BuildableReference>
@@ -33,7 +33,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E1B661FD1DBC530E00F9C758"
-            BuildableName = "WeakDictionary-watchOS.framework"
+            BuildableName = "WeakDictionary.framework"
             BlueprintName = "WeakDictionary-watchOS"
             ReferencedContainer = "container:WeakDictionary.xcodeproj">
          </BuildableReference>
@@ -55,7 +55,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E1B661FD1DBC530E00F9C758"
-            BuildableName = "WeakDictionary-watchOS.framework"
+            BuildableName = "WeakDictionary.framework"
             BlueprintName = "WeakDictionary-watchOS"
             ReferencedContainer = "container:WeakDictionary.xcodeproj">
          </BuildableReference>
@@ -73,7 +73,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E1B661FD1DBC530E00F9C758"
-            BuildableName = "WeakDictionary-watchOS.framework"
+            BuildableName = "WeakDictionary.framework"
             BlueprintName = "WeakDictionary-watchOS"
             ReferencedContainer = "container:WeakDictionary.xcodeproj">
          </BuildableReference>
