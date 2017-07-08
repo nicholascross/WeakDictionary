@@ -16,16 +16,16 @@ Naive (strong key/weak value) dictionary &amp; (weak key/weak value) dictionary 
 * `reap` will remove any orphaned value references for mutable dictionaries
 * `toStrongDictionary` will create a new swift dictionary excluding any nullified value references
 ```swift
-        var dictionary = WeakDictionary<String, Example>()
-        var value: Example? = Example()
-        dictionary["key"] = value
-        
-        print("\(dictionary["key"] != nil ? "has value" : "value missing")")
-        //prints: has value
-        
-        value = nil
-        print("\(dictionary["key"] != nil ? "has value" : "value missing")")
-        //prints: value missing
+var dictionary = WeakDictionary<String, Example>()
+var value: Example? = Example()
+dictionary["key"] = value
+
+print("\(dictionary["key"] != nil ? "has value" : "value missing")")
+//prints: has value
+
+value = nil
+print("\(dictionary["key"] != nil ? "has value" : "value missing")")
+//prints: value missing
 ```
 
 ## WeakKeyDictionary
