@@ -61,14 +61,14 @@ private class Example1 : Hashable {
 }
 
 var dictionary = WeakKeyDictionary<Example1, Example>()
-var f: Example1? = Example1(name: "value")
+var f: Example1 = Example1(name: "value")
 let s: Example? = Example()
-dictionary[f!] = s
-print("\(dictionary[f!] != nil ? "an example exits" : "no example exits")")
+dictionary[f] = s
+print("\(dictionary[f] != nil ? "an example exits" : "no example exits")")
 //prints: an example exits
 
-f = nil
-let e = Example1(name: "Left")
+f = Example1(name: "anothervalue")
+let e = Example1(name: "value")
 print("\(dictionary[e] != nil ? "an example exits" : "no example exits")")
 //prints: no example exits
 
