@@ -30,6 +30,15 @@
 		E1CF11E021DCA87200488793 /* WeakKeyDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CF11DF21DCA87200488793 /* WeakKeyDictionary.swift */; };
 		E1CF11E221DCA8AC00488793 /* WeakDictionaryKeyReference.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CF11E121DCA8AC00488793 /* WeakDictionaryKeyReference.swift */; };
 		E1CF11E421DCA90B00488793 /* WeakDictionaryReference.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CF11E321DCA90B00488793 /* WeakDictionaryReference.swift */; };
+		E1CF11E621DD783700488793 /* WeakKeyDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CF11DF21DCA87200488793 /* WeakKeyDictionary.swift */; };
+		E1CF11E721DD783800488793 /* WeakKeyDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CF11DF21DCA87200488793 /* WeakKeyDictionary.swift */; };
+		E1CF11E821DD783900488793 /* WeakKeyDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CF11DF21DCA87200488793 /* WeakKeyDictionary.swift */; };
+		E1CF11E921DD783C00488793 /* WeakDictionaryKeyReference.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CF11E121DCA8AC00488793 /* WeakDictionaryKeyReference.swift */; };
+		E1CF11EA21DD783D00488793 /* WeakDictionaryKeyReference.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CF11E121DCA8AC00488793 /* WeakDictionaryKeyReference.swift */; };
+		E1CF11EB21DD783D00488793 /* WeakDictionaryKeyReference.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CF11E121DCA8AC00488793 /* WeakDictionaryKeyReference.swift */; };
+		E1CF11EC21DD784100488793 /* WeakDictionaryReference.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CF11E321DCA90B00488793 /* WeakDictionaryReference.swift */; };
+		E1CF11ED21DD784200488793 /* WeakDictionaryReference.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CF11E321DCA90B00488793 /* WeakDictionaryReference.swift */; };
+		E1CF11EE21DD784300488793 /* WeakDictionaryReference.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CF11E321DCA90B00488793 /* WeakDictionaryReference.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -516,6 +525,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				E1B661D81DBC501300F9C758 /* WeakDictionary.swift in Sources */,
+				E1CF11EE21DD784300488793 /* WeakDictionaryReference.swift in Sources */,
+				E1CF11E621DD783700488793 /* WeakKeyDictionary.swift in Sources */,
+				E1CF11E921DD783C00488793 /* WeakDictionaryKeyReference.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -534,6 +546,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				E1B661F51DBC50FD00F9C758 /* WeakDictionary.swift in Sources */,
+				E1CF11ED21DD784200488793 /* WeakDictionaryReference.swift in Sources */,
+				E1CF11E721DD783800488793 /* WeakKeyDictionary.swift in Sources */,
+				E1CF11EA21DD783D00488793 /* WeakDictionaryKeyReference.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -552,6 +567,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				E1B662061DBC53C000F9C758 /* WeakDictionary.swift in Sources */,
+				E1CF11EC21DD784100488793 /* WeakDictionaryReference.swift in Sources */,
+				E1CF11E821DD783900488793 /* WeakKeyDictionary.swift in Sources */,
+				E1CF11EB21DD783D00488793 /* WeakDictionaryKeyReference.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
