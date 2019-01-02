@@ -63,11 +63,11 @@ class WeakKeyDictionaryTests: XCTestCase {
         weakDictionary[transientKey!] = referencedValue
         XCTAssertEqual(weakDictionary.count, 1, "Expected to be left holding an empty reference")
 
-        var reaped = weakDictionary.reapedDictionary()
+        var reaped = weakDictionary.weakKeyDictionary()
         XCTAssertEqual(reaped.count, 1, "Expected to be left holding a single reference")
 
         transientKey = nil
-        reaped = weakDictionary.reapedDictionary()
+        reaped = weakDictionary.weakKeyDictionary()
         XCTAssertEqual(reaped.count, 0, "Expected to be left holding no references")
 
         reaped[ExampleKey(name: "Fleeting")] = ExampleValue()
@@ -75,7 +75,7 @@ class WeakKeyDictionaryTests: XCTestCase {
         reaped[ExampleKey(name: "Fleeting2")] = ExampleValue()
         reaped[ExampleKey(name: "Fleeting3")] = ExampleValue()
         reaped[ExampleKey(name: "Fleeting4")] = ExampleValue()
-        reaped = reaped.reapedDictionary()
+        reaped = reaped.weakKeyDictionary()
         XCTAssertEqual(reaped.count, 0, "Expected to be left holding nil references")
     }
 
@@ -85,11 +85,11 @@ class WeakKeyDictionaryTests: XCTestCase {
         weakDictionary[retainedKey] = transientValue
         XCTAssertEqual(weakDictionary.count, 1, "Expected to be left holding an empty reference")
 
-        var reaped = weakDictionary.reapedDictionary()
+        var reaped = weakDictionary.weakKeyDictionary()
         XCTAssertEqual(reaped.count, 1, "Expected to be left holding a single reference")
 
         transientValue = nil
-        reaped = weakDictionary.reapedDictionary()
+        reaped = weakDictionary.weakKeyDictionary()
         XCTAssertEqual(reaped.count, 0, "Expected to be left holding no references")
     }
 
@@ -122,28 +122,28 @@ class WeakKeyDictionaryTests: XCTestCase {
         weakDictionary[retainedKey] = transientValue
         XCTAssert(weakDictionary.count == 1, "Expected to be left holding an empty reference \(weakDictionary.count)")
 
-        var reaped = weakDictionary.reapedDictionary()
+        var reaped = weakDictionary.weakKeyDictionary()
         XCTAssertEqual(reaped.count, 1, "Expected to be left holding a single reference")
 
-        var strongDictionary: [ExampleKey: ExampleValue]? = weakDictionary.toStrongDictionary()
+        var strongDictionary: [ExampleKey: ExampleValue]? = weakDictionary.dictionary()
         XCTAssert(strongDictionary?.count == 1, "Expected to be holding a single key value pair")
 
         transientValue = nil
-        reaped = weakDictionary.reapedDictionary()
+        reaped = weakDictionary.weakKeyDictionary()
         XCTAssertEqual(reaped.count, 1, "Expected to be left holding a single reference")
 
         weak var weakExample: ExampleValue? = strongDictionary?[retainedKey]
         XCTAssertNotNil(weakExample, "Expected to find Example in strong dictionary")
 
         strongDictionary = nil
-        reaped = weakDictionary.reapedDictionary()
+        reaped = weakDictionary.weakKeyDictionary()
         XCTAssertEqual(reaped.count, 0, "Expected unreferenced values to be released")
 
         transientValue = ExampleValue()
         weakDictionary[retainedKey] = transientValue
         transientValue = nil
         XCTAssertEqual(weakDictionary.count, 1, "Expected to be holding an empty value reference")
-        XCTAssertEqual(weakDictionary.toStrongDictionary().count, 0, "Expected empty references to be ignored")
+        XCTAssertEqual(weakDictionary.dictionary().count, 0, "Expected empty references to be ignored")
     }
 
     func testInitWithDictionary() {
@@ -181,13 +181,13 @@ class WeakKeyDictionaryTests: XCTestCase {
         //prints: number of item in dictionary 1
         //This is because nil key/value references are not automatically nullified when the key or value is deallocated
 
-        print("number of item in reaped dictionary \(dictionary.reapedDictionary().count)")
+        print("number of item in reaped dictionary \(dictionary.weakKeyDictionary().count)")
         //prints: number of item in reaped dictionary 0
         //Reaping the dictionary removes any keys without values and values not referenced by any key
     }
 
     private func createTestData() -> (Int, [ExampleKey]) {
-        let iterations = 50000
+        let iterations = 10000
 
         var keys = [ExampleKey]()
         for index in 0..<iterations {

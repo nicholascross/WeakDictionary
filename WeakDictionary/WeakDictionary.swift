@@ -8,9 +8,7 @@
 
 import Foundation
 
-public struct WeakDictionary<Key: Hashable, Value: AnyObject> : Collection {
-
-    public typealias Index = DictionaryIndex<Key, WeakDictionaryReference<Value>>
+public struct WeakDictionary<Key: Hashable, Value: AnyObject> {
 
     private var storage: [Key: WeakDictionaryReference<Value>]
 
@@ -27,6 +25,31 @@ public struct WeakDictionary<Key: Hashable, Value: AnyObject> : Collection {
     private init(storage: [Key: WeakDictionaryReference<Value>]) {
         self.storage = storage
     }
+
+    public mutating func reap() {
+        storage = weakDictionary().storage
+    }
+
+    public func weakDictionary() -> WeakDictionary<Key, Value> {
+        return self[startIndex ..< endIndex]
+    }
+
+    public func dictionary() -> [Key: Value] {
+        var newStorage = [Key: Value]()
+
+        storage.forEach { key, value in
+            if let retainedValue = value.value {
+                newStorage[key] = retainedValue
+            }
+        }
+
+        return newStorage
+    }
+}
+
+extension WeakDictionary: Collection {
+
+    public typealias Index = DictionaryIndex<Key, WeakDictionaryReference<Value>>
 
     public var startIndex: Index {
         return storage.startIndex
@@ -68,28 +91,8 @@ public struct WeakDictionary<Key: Hashable, Value: AnyObject> : Collection {
         var newStorage = [Key: WeakDictionaryReference<Value>]()
 
         subStorage.filter { _, value in return value.value != nil }
-                .forEach { key, value in newStorage[key] = value }
+            .forEach { key, value in newStorage[key] = value }
 
         return WeakDictionary<Key, Value>(storage: newStorage)
-    }
-
-    public func reapedDictionary() -> WeakDictionary<Key, Value> {
-        return self[startIndex ..< endIndex]
-    }
-
-    public mutating func reap() {
-        storage = reapedDictionary().storage
-    }
-
-    public func toStrongDictionary() -> [Key: Value] {
-        var newStorage = [Key: Value]()
-
-        storage.forEach { key, value in
-            if let retainedValue = value.value {
-                newStorage[key] = retainedValue
-            }
-        }
-
-        return newStorage
     }
 }

@@ -45,11 +45,11 @@ class WeakDictionaryTests: XCTestCase {
         weakDictionary["avalue"] = transientValue
         XCTAssertEqual(weakDictionary.count, 1, "Expected to be left holding an empty reference")
 
-        var reaped = weakDictionary.reapedDictionary()
+        var reaped = weakDictionary.weakDictionary()
         XCTAssertEqual(reaped.count, 1, "Expected to be left holding a single reference")
 
         transientValue = nil
-        reaped = weakDictionary.reapedDictionary()
+        reaped = weakDictionary.weakDictionary()
         XCTAssertEqual(reaped.count, 0, "Expected to be left holding no references")
     }
 
@@ -71,28 +71,28 @@ class WeakDictionaryTests: XCTestCase {
         weakDictionary["avalue"] = transientValue
         XCTAssertEqual(weakDictionary.count, 1, "Expected to be left holding an empty reference")
 
-        var reaped = weakDictionary.reapedDictionary()
+        var reaped = weakDictionary.weakDictionary()
         XCTAssertEqual(reaped.count, 1, "Expected to be left holding a single reference")
 
-        var strongDictionary: [String: Example]? = weakDictionary.toStrongDictionary()
+        var strongDictionary: [String: Example]? = weakDictionary.dictionary()
         XCTAssert(strongDictionary?.count == 1, "Expected to be holding a single key value pair")
 
         transientValue = nil
-        reaped = weakDictionary.reapedDictionary()
+        reaped = weakDictionary.weakDictionary()
         XCTAssertEqual(reaped.count, 1, "Expected to be left holding a single reference \(reaped.count)")
 
         weak var weakSock: Example? = strongDictionary?["avalue"]
         XCTAssertNotNil(weakSock, "Expected to find sock in strong dictionary")
 
         strongDictionary = nil
-        reaped = weakDictionary.reapedDictionary()
+        reaped = weakDictionary.weakDictionary()
         XCTAssertEqual(reaped.count, 0, "Expected unreferenced values to be released")
 
         transientValue = Example()
         weakDictionary["avalue"] = transientValue
         transientValue = nil
         XCTAssertEqual(weakDictionary.count, 1, "Expected to be holding an empty value reference")
-        XCTAssertEqual(weakDictionary.toStrongDictionary().count, 0, "Expected empty references to be ignored")
+        XCTAssertEqual(weakDictionary.dictionary().count, 0, "Expected empty references to be ignored")
     }
 
     func testInitWithDictionary() {

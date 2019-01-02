@@ -8,8 +8,7 @@
 
 import Foundation
 
-public struct WeakKeyDictionary<Key: AnyObject & Hashable, Value: AnyObject> : Collection {
-    public typealias Index = DictionaryIndex<WeakDictionaryKey<Key, Value>, WeakDictionaryReference<Value>>
+public struct WeakKeyDictionary<Key: AnyObject & Hashable, Value: AnyObject> {
 
     private var storage: WeakDictionary<WeakDictionaryKey<Key, Value>, Value>
     private let valuesRetainedByKey: Bool
@@ -27,10 +26,10 @@ public struct WeakKeyDictionary<Key: AnyObject & Hashable, Value: AnyObject> : C
         dictionary.forEach { key, value in
             var keyRef: WeakDictionaryKey<Key, Value>!
 
-            if !valuesRetainedByKey {
-                keyRef = WeakDictionaryKey<Key, Value>(key: key)
-            } else {
+            if valuesRetainedByKey {
                 keyRef = WeakDictionaryKey<Key, Value>(key: key, value: value)
+            } else {
+                keyRef = WeakDictionaryKey<Key, Value>(key: key)
             }
 
             newStorage[keyRef] = value
@@ -43,6 +42,31 @@ public struct WeakKeyDictionary<Key: AnyObject & Hashable, Value: AnyObject> : C
         self.storage = storage
         self.valuesRetainedByKey = valuesRetainedByKey
     }
+
+    public mutating func reap() {
+        storage = weakKeyDictionary().storage
+    }
+
+    public func weakKeyDictionary() -> WeakKeyDictionary<Key, Value> {
+        return self[startIndex ..< endIndex]
+    }
+
+    public func dictionary() -> [Key: Value] {
+        var newStorage = [Key: Value]()
+
+        storage.forEach { key, value in
+            if let retainedKey = key.key, let retainedValue = value.value {
+                newStorage[retainedKey] = retainedValue
+            }
+        }
+
+        return newStorage
+    }
+}
+
+extension WeakKeyDictionary: Collection {
+
+    public typealias Index = DictionaryIndex<WeakDictionaryKey<Key, Value>, WeakDictionaryReference<Value>>
 
     public var startIndex: Index {
         return storage.startIndex
@@ -80,25 +104,5 @@ public struct WeakKeyDictionary<Key: AnyObject & Hashable, Value: AnyObject> : C
             .forEach { key, value in newStorage[key] = value.value }
 
         return WeakKeyDictionary<Key, Value>(storage: newStorage)
-    }
-
-    public func reapedDictionary() -> WeakKeyDictionary<Key, Value> {
-        return self[startIndex ..< endIndex]
-    }
-
-    public mutating func reap() {
-        storage = reapedDictionary().storage
-    }
-
-    public func toStrongDictionary() -> [Key: Value] {
-        var newStorage = [Key: Value]()
-
-        storage.forEach { key, value in
-            if let retainedKey = key.key, let retainedValue = value.value {
-                newStorage[retainedKey] = retainedValue
-            }
-        }
-
-        return newStorage
     }
 }
