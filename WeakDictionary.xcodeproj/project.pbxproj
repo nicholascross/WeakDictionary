@@ -347,12 +347,13 @@
 					E101D8211DB76CE800B5BDB8 = {
 						CreatedOnToolsVersion = 8.0;
 						DevelopmentTeam = BRM53H4XE2;
-						LastSwiftMigration = 0800;
+						LastSwiftMigration = 1010;
 						ProvisioningStyle = Automatic;
 					};
 					E101D82A1DB76CE800B5BDB8 = {
 						CreatedOnToolsVersion = 8.0;
 						DevelopmentTeam = BRM53H4XE2;
+						LastSwiftMigration = 1010;
 						ProvisioningStyle = Automatic;
 					};
 					E1B661BD1DBC4D4900F9C758 = {
@@ -676,7 +677,8 @@
 				PRODUCT_NAME = WeakDictionary;
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.2;
 				TVOS_DEPLOYMENT_TARGET = 9.0;
 				WATCHOS_DEPLOYMENT_TARGET = 2.2;
 			};
@@ -699,7 +701,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.nacross.WeakDictionary;
 				PRODUCT_NAME = WeakDictionary;
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.2;
 				TVOS_DEPLOYMENT_TARGET = 9.0;
 				WATCHOS_DEPLOYMENT_TARGET = 2.2;
 			};
@@ -714,7 +717,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.nacross.WeakDictionaryTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.2;
 			};
 			name = Debug;
 		};
@@ -727,7 +731,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.nacross.WeakDictionaryTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.2;
 			};
 			name = Release;
 		};
