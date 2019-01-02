@@ -1,7 +1,7 @@
 os:
   - osx
 language: swift
-osx_image: xcode8
+osx_image: xcode10.1
 script:
   - xcodebuild -enableCodeCoverage YES -scheme WeakDictionary-iOS -project WeakDictionary.xcodeproj -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 6S,OS=9.0' build test GCC_INSTRUMENT_PROGRAM_FLOW_ARCS=YES GCC_GENERATE_TEST_COVERAGE_FILES=YES
   - xcodebuild -scheme WeakDictionary-iOS -project WeakDictionary.xcodeproj -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 6S,OS=10.0' build test
