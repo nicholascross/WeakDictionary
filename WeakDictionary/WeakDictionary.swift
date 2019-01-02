@@ -15,17 +15,17 @@ public struct WeakDictionary<Key: Hashable, Value: AnyObject> : Collection {
     private var storage: Dictionary<Key, WeakDictionaryReference<Value>>
 
     public init() {
-        storage = Dictionary<Key, WeakDictionaryReference<Value>>()
+        self.init(storage: Dictionary<Key, WeakDictionaryReference<Value>>())
     }
 
     public init(dictionary: [Key: Value]) {
         var newStorage = Dictionary<Key, WeakDictionaryReference<Value>>()
         dictionary.forEach({ key, value in newStorage[key] = WeakDictionaryReference<Value>(value: value) })
-        storage = newStorage
+        self.init(storage: newStorage)
     }
 
-    private init(withStorage s: Dictionary<Key, WeakDictionaryReference<Value>>) {
-        storage = s
+    private init(storage: Dictionary<Key, WeakDictionaryReference<Value>>) {
+        self.storage = storage
     }
 
     public var startIndex: Index {
@@ -74,7 +74,7 @@ public struct WeakDictionary<Key: Hashable, Value: AnyObject> : Collection {
             newStorage[key] = value
         })
 
-        return WeakDictionary<Key, Value>(withStorage: newStorage)
+        return WeakDictionary<Key, Value>(storage: newStorage)
     }
 
     public func reapedDictionary() -> WeakDictionary<Key, Value> {
@@ -103,14 +103,13 @@ public struct WeakKeyDictionary<Key: AnyObject & Hashable, Value: AnyObject> : C
     public typealias Index = DictionaryIndex<WeakDictionaryKey<Key, Value>, WeakDictionaryReference<Value>>
 
     private var storage: WeakDictionary<WeakDictionaryKey<Key, Value>, Value>
-    private let isValueRetainedByKey: Bool
+    private let valuesRetainedByKey: Bool
 
-    public init(withValuesRetainedByKey retainValues: Bool = false) {
-        storage = WeakDictionary<WeakDictionaryKey<Key, Value>, Value>()
-        isValueRetainedByKey = retainValues
+    public init(valuesRetainedByKey: Bool = false) {
+        self.init(storage: WeakDictionary<WeakDictionaryKey<Key, Value>, Value>(), valuesRetainedByKey: valuesRetainedByKey)
     }
 
-    public init(dictionary: [Key: Value], withValuesRetainedByKey retainValues: Bool = false) {
+    public init(dictionary: [Key: Value], valuesRetainedByKey: Bool = false) {
         var newStorage = WeakDictionary<WeakDictionaryKey<Key, Value>, Value>()
 
         dictionary.forEach({
@@ -118,7 +117,7 @@ public struct WeakKeyDictionary<Key: AnyObject & Hashable, Value: AnyObject> : C
 
             var keyRef: WeakDictionaryKey<Key, Value>!
 
-            if !retainValues {
+            if !valuesRetainedByKey {
                 keyRef = WeakDictionaryKey<Key, Value>(key: key)
             } else {
                 keyRef = WeakDictionaryKey<Key, Value>(key: key, value: value)
@@ -127,13 +126,12 @@ public struct WeakKeyDictionary<Key: AnyObject & Hashable, Value: AnyObject> : C
             newStorage[keyRef] = value
         })
 
-        storage = newStorage
-        isValueRetainedByKey = retainValues
+        self.init(storage: newStorage, valuesRetainedByKey: valuesRetainedByKey)
     }
 
-    private init(withStorage s: WeakDictionary<WeakDictionaryKey<Key, Value>, Value>, withValuesRetainedByKey retainValues: Bool = false) {
-        storage = s
-        isValueRetainedByKey = retainValues
+    private init(storage: WeakDictionary<WeakDictionaryKey<Key, Value>, Value>, valuesRetainedByKey: Bool = false) {
+        self.storage = storage
+        self.valuesRetainedByKey = valuesRetainedByKey
     }
 
     public var startIndex: Index {
@@ -160,7 +158,7 @@ public struct WeakKeyDictionary<Key: AnyObject & Hashable, Value: AnyObject> : C
         }
 
         set {
-            let retainedValue = isValueRetainedByKey ? newValue : nil
+            let retainedValue = valuesRetainedByKey ? newValue : nil
             let weakKey = WeakDictionaryKey<Key, Value>(key: key, value: retainedValue)
             storage[weakKey] = newValue
         }
@@ -175,7 +173,7 @@ public struct WeakKeyDictionary<Key: AnyObject & Hashable, Value: AnyObject> : C
             newStorage[key] = value.value
         })
 
-        return WeakKeyDictionary<Key, Value>(withStorage: newStorage)
+        return WeakKeyDictionary<Key, Value>(storage: newStorage)
     }
 
     public func reapedDictionary() -> WeakKeyDictionary<Key, Value> {

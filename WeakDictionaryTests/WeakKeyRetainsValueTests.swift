@@ -34,7 +34,7 @@ class WeakKeyRetainsValuesTests: XCTestCase {
     override func setUp() {
         super.setUp()
 
-        weakDictionary = WeakKeyDictionary<Example1, Example>(withValuesRetainedByKey: true)
+        weakDictionary = WeakKeyDictionary<Example1, Example>(valuesRetainedByKey: true)
     }
 
     func testAssignmentWithValuesRetainedByKey() {
