@@ -12,19 +12,19 @@ public struct WeakDictionary<Key: Hashable, Value: AnyObject> : Collection {
 
     public typealias Index = DictionaryIndex<Key, WeakDictionaryReference<Value>>
 
-    private var storage: Dictionary<Key, WeakDictionaryReference<Value>>
+    private var storage: [Key: WeakDictionaryReference<Value>]
 
     public init() {
-        self.init(storage: Dictionary<Key, WeakDictionaryReference<Value>>())
+        self.init(storage: [Key: WeakDictionaryReference<Value>]())
     }
 
     public init(dictionary: [Key: Value]) {
-        var newStorage = Dictionary<Key, WeakDictionaryReference<Value>>()
+        var newStorage = [Key: WeakDictionaryReference<Value>]()
         dictionary.forEach({ key, value in newStorage[key] = WeakDictionaryReference<Value>(value: value) })
         self.init(storage: newStorage)
     }
 
-    private init(storage: Dictionary<Key, WeakDictionaryReference<Value>>) {
+    private init(storage: [Key: WeakDictionaryReference<Value>]) {
         self.storage = storage
     }
 
@@ -36,14 +36,12 @@ public struct WeakDictionary<Key: Hashable, Value: AnyObject> : Collection {
         return storage.endIndex
     }
 
-    public func index(after i: Index) -> Index {
-        return storage.index(after: i)
+    public func index(after index: Index) -> Index {
+        return storage.index(after: index)
     }
 
     public subscript(position: Index) -> (Key, WeakDictionaryReference<Value>) {
-        get {
-            return storage[position]
-        }
+        return storage[position]
     }
 
     public subscript(key: Key) -> Value? {
@@ -67,12 +65,10 @@ public struct WeakDictionary<Key: Hashable, Value: AnyObject> : Collection {
 
     public subscript(bounds: Range<Index>) -> WeakDictionary<Key, Value> {
         let subStorage = storage[bounds.lowerBound ..< bounds.upperBound]
-        var newStorage = Dictionary<Key, WeakDictionaryReference<Value>>()
+        var newStorage = [Key: WeakDictionaryReference<Value>]()
 
-        subStorage.filter({ _, value in return value.value != nil }).forEach({
-            key, value in
-            newStorage[key] = value
-        })
+        subStorage.filter { _, value in return value.value != nil }
+                .forEach { key, value in newStorage[key] = value }
 
         return WeakDictionary<Key, Value>(storage: newStorage)
     }
@@ -86,14 +82,13 @@ public struct WeakDictionary<Key: Hashable, Value: AnyObject> : Collection {
     }
 
     public func toStrongDictionary() -> [Key: Value] {
-        var newStorage = Dictionary<Key, Value>()
+        var newStorage = [Key: Value]()
 
-        storage.forEach({
-            key, value in
-            if let v = value.value {
-                newStorage[key] = v
+        storage.forEach { key, value in
+            if let retainedValue = value.value {
+                newStorage[key] = retainedValue
             }
-        })
+        }
 
         return newStorage
     }

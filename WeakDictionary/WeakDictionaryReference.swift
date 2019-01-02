@@ -10,14 +10,12 @@ import Foundation
 
 public struct WeakDictionaryReference<Value: AnyObject> {
     private weak var referencedValue: Value?
-    
+
     init(value: Value) {
         referencedValue = value
     }
-    
+
     public var value: Value? {
-        get {
-            return referencedValue
-        }
+        return referencedValue
     }
 }
