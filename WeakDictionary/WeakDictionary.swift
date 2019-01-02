@@ -56,8 +56,6 @@ public struct WeakDictionary<Key : Hashable, Value : AnyObject> : Collection {
         }
         
         set {
-            storage = reapedDictionary().storage
-            
             guard let value = newValue else {
                 storage[key] = nil
                 return
@@ -164,8 +162,6 @@ public struct WeakKeyDictionary<Key : AnyObject & Hashable, Value : AnyObject> :
         }
         
         set {
-            storage = reapedDictionary().storage
-            
             let retainedValue = isValueRetainedByKey ? newValue : nil
             let weakKey = WeakDictionaryKey<Key, Value>(key: key, value: retainedValue)
             storage[weakKey] = newValue
@@ -220,13 +216,12 @@ public struct WeakDictionaryReference<Value : AnyObject> {
     }
 }
 
-private let nilKeyHash = UUID().hashValue
-
 public struct WeakDictionaryKey<Key : AnyObject & Hashable, Value : AnyObject> : Hashable {
     
     private weak var baseKey: Key?
     private let hash: Int
     private var retainedValue: Value?
+    private let nilKeyHash = UUID().hashValue
     
     public init(key: Key, value: Value? = nil) {
         baseKey = key
@@ -235,7 +230,7 @@ public struct WeakDictionaryKey<Key : AnyObject & Hashable, Value : AnyObject> :
     }
     
     public static func ==(lhs: WeakDictionaryKey, rhs: WeakDictionaryKey) -> Bool {
-        return lhs.baseKey == rhs.baseKey
+        return (lhs.baseKey != nil && rhs.baseKey != nil && lhs.baseKey == rhs.baseKey) || lhs.hashValue == rhs.hashValue
     }
     
     public var hashValue: Int {
