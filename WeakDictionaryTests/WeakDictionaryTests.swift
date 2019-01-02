@@ -9,23 +9,23 @@
 import XCTest
 @testable import WeakDictionary
 
-private class Example {
+private class ExampleValue {
 
 }
 
 class WeakDictionaryTests: XCTestCase {
 
-    private var weakDictionary: WeakDictionary<String, Example>!
+    private var weakDictionary: WeakDictionary<String, ExampleValue>!
 
     override func setUp() {
         super.setUp()
 
-        weakDictionary = WeakDictionary<String, Example>()
+        weakDictionary = WeakDictionary<String, ExampleValue>()
     }
 
     func testAssignment() {
         let retainedKey = "avalue"
-        var transientValue: Example? = Example()
+        var transientValue: ExampleValue? = ExampleValue()
         weakDictionary[retainedKey] = transientValue
         XCTAssertEqual(weakDictionary.count, 1, "Expected to be left holding a reference")
 
@@ -41,7 +41,7 @@ class WeakDictionaryTests: XCTestCase {
     }
 
     func testReaping() {
-        var transientValue: Example? = Example()
+        var transientValue: ExampleValue? = ExampleValue()
         weakDictionary["avalue"] = transientValue
         XCTAssertEqual(weakDictionary.count, 1, "Expected to be left holding an empty reference")
 
@@ -54,7 +54,7 @@ class WeakDictionaryTests: XCTestCase {
     }
 
     func testMutatingReap() {
-        var transientValue: Example? = Example()
+        var transientValue: ExampleValue? = ExampleValue()
         weakDictionary["avalue"] = transientValue
         XCTAssertEqual(weakDictionary.count, 1, "Expected to be left holding a single reference")
 
@@ -67,28 +67,28 @@ class WeakDictionaryTests: XCTestCase {
     }
 
     func testStrongification() {
-        var transientValue: Example? = Example()
+        var transientValue: ExampleValue? = ExampleValue()
         weakDictionary["avalue"] = transientValue
         XCTAssertEqual(weakDictionary.count, 1, "Expected to be left holding an empty reference")
 
         var reaped = weakDictionary.weakDictionary()
         XCTAssertEqual(reaped.count, 1, "Expected to be left holding a single reference")
 
-        var strongDictionary: [String: Example]? = weakDictionary.dictionary()
+        var strongDictionary: [String: ExampleValue]? = weakDictionary.dictionary()
         XCTAssert(strongDictionary?.count == 1, "Expected to be holding a single key value pair")
 
         transientValue = nil
         reaped = weakDictionary.weakDictionary()
         XCTAssertEqual(reaped.count, 1, "Expected to be left holding a single reference \(reaped.count)")
 
-        weak var weakSock: Example? = strongDictionary?["avalue"]
+        weak var weakSock: ExampleValue? = strongDictionary?["avalue"]
         XCTAssertNotNil(weakSock, "Expected to find sock in strong dictionary")
 
         strongDictionary = nil
         reaped = weakDictionary.weakDictionary()
         XCTAssertEqual(reaped.count, 0, "Expected unreferenced values to be released")
 
-        transientValue = Example()
+        transientValue = ExampleValue()
         weakDictionary["avalue"] = transientValue
         transientValue = nil
         XCTAssertEqual(weakDictionary.count, 1, "Expected to be holding an empty value reference")
@@ -96,12 +96,12 @@ class WeakDictionaryTests: XCTestCase {
     }
 
     func testInitWithDictionary() {
-        var dictionary: [String: Example]? = [
-            "Left": Example(),
-            "Right": Example()
+        var dictionary: [String: ExampleValue]? = [
+            "Left": ExampleValue(),
+            "Right": ExampleValue()
         ]
 
-        weakDictionary = WeakDictionary<String, Example>(dictionary: dictionary!)
+        weakDictionary = WeakDictionary<String, ExampleValue>(dictionary: dictionary!)
         XCTAssertEqual(weakDictionary.count, 2, "Expected dictionary to be initialised with two references")
 
         let accessValue = weakDictionary["Left"]
@@ -113,8 +113,8 @@ class WeakDictionaryTests: XCTestCase {
     }
 
     func testReadmeExample() {
-        var dictionary = WeakDictionary<String, Example>()
-        var value: Example? = Example()
+        var dictionary = WeakDictionary<String, ExampleValue>()
+        var value: ExampleValue? = ExampleValue()
         dictionary["key"] = value
 
         print("\(dictionary["key"] != nil ? "has value" : "value missing")")
