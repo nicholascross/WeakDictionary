@@ -56,11 +56,13 @@ public struct WeakDictionary<Key : Hashable, Value : AnyObject> : Collection {
         }
         
         set {
+            storage = reapedDictionary().storage
+            
             guard let value = newValue else {
                 storage[key] = nil
                 return
             }
-            
+
             storage[key] = WeakDictionaryReference<Value>(value: value)
         }
     }
@@ -162,6 +164,8 @@ public struct WeakKeyDictionary<Key : AnyObject & Hashable, Value : AnyObject> :
         }
         
         set {
+            storage = reapedDictionary().storage
+            
             let retainedValue = isValueRetainedByKey ? newValue : nil
             let weakKey = WeakDictionaryKey<Key, Value>(key: key, value: retainedValue)
             storage[weakKey] = newValue

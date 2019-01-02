@@ -72,11 +72,10 @@ class WeakKeyDictionaryTests: XCTestCase {
         XCTAssert(s2 == nil, "Expected key to have no accessible value")
         
         weakDictionary[Example1(name: "Right")] = nil
-        XCTAssert(weakDictionary.count == 1, "Expected to be left holding a nil reference \(weakDictionary.count)")
+        XCTAssert(weakDictionary.count == 0, "Expected to be left holding a nil reference \(weakDictionary.count)")
         
         weakDictionary[Example1(name: "Fleeting")] = Example()
-        weakDictionary[Example1(name: "Fleeting1")] = Example()
-        XCTAssert(weakDictionary.count == 3, "Expected to be left holding nil references \(weakDictionary.count)")
+        XCTAssert(weakDictionary.count == 1, "Expected to be left holding a nil reference \(weakDictionary.count)")
     }
     
     func testKeyReaping() {
