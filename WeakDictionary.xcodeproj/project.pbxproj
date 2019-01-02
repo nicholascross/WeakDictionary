@@ -27,6 +27,9 @@
 		E1B661F81DBC510E00F9C758 /* WeakKeyDictionaryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1381FC41DB8DEDF00FBB089 /* WeakKeyDictionaryTests.swift */; };
 		E1B662061DBC53C000F9C758 /* WeakDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = E101D83C1DB76D1A00B5BDB8 /* WeakDictionary.swift */; };
 		E1B662071DBC53C600F9C758 /* WeakDictionary.h in Headers */ = {isa = PBXBuildFile; fileRef = E101D8251DB76CE800B5BDB8 /* WeakDictionary.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E1CF11E021DCA87200488793 /* WeakKeyDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CF11DF21DCA87200488793 /* WeakKeyDictionary.swift */; };
+		E1CF11E221DCA8AC00488793 /* WeakDictionaryKeyReference.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CF11E121DCA8AC00488793 /* WeakDictionaryKeyReference.swift */; };
+		E1CF11E421DCA90B00488793 /* WeakDictionaryReference.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CF11E321DCA90B00488793 /* WeakDictionaryReference.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -68,6 +71,9 @@
 		E1B661DE1DBC509800F9C758 /* WeakDictionary.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = WeakDictionary.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E1B661E61DBC509800F9C758 /* WeakDictionary-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "WeakDictionary-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E1B661FE1DBC530E00F9C758 /* WeakDictionary.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = WeakDictionary.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E1CF11DF21DCA87200488793 /* WeakKeyDictionary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeakKeyDictionary.swift; sourceTree = "<group>"; };
+		E1CF11E121DCA8AC00488793 /* WeakDictionaryKeyReference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeakDictionaryKeyReference.swift; sourceTree = "<group>"; };
+		E1CF11E321DCA90B00488793 /* WeakDictionaryReference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeakDictionaryReference.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -155,6 +161,9 @@
 				E101D8251DB76CE800B5BDB8 /* WeakDictionary.h */,
 				E101D8261DB76CE800B5BDB8 /* Info.plist */,
 				E101D83C1DB76D1A00B5BDB8 /* WeakDictionary.swift */,
+				E1CF11DF21DCA87200488793 /* WeakKeyDictionary.swift */,
+				E1CF11E121DCA8AC00488793 /* WeakDictionaryKeyReference.swift */,
+				E1CF11E321DCA90B00488793 /* WeakDictionaryReference.swift */,
 			);
 			path = WeakDictionary;
 			sourceTree = "<group>";
@@ -464,6 +473,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				E101D83D1DB76D1A00B5BDB8 /* WeakDictionary.swift in Sources */,
+				E1CF11E421DCA90B00488793 /* WeakDictionaryReference.swift in Sources */,
+				E1CF11E021DCA87200488793 /* WeakKeyDictionary.swift in Sources */,
+				E1CF11E221DCA8AC00488793 /* WeakDictionaryKeyReference.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
