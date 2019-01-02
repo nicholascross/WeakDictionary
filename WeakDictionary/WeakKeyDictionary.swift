@@ -47,6 +47,10 @@ public struct WeakKeyDictionary<Key: AnyObject & Hashable, Value: AnyObject> {
         storage = weakKeyDictionary().storage
     }
 
+    public func weakDictionary() -> WeakDictionary<Key, Value> {
+        return WeakDictionary<Key, Value>(dictionary: dictionary())
+    }
+
     public func weakKeyDictionary() -> WeakKeyDictionary<Key, Value> {
         return self[startIndex ..< endIndex]
     }

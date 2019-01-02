@@ -96,3 +96,9 @@ extension WeakDictionary: Collection {
         return WeakDictionary<Key, Value>(storage: newStorage)
     }
 }
+
+extension WeakDictionary where Key: AnyObject {
+    public func weakKeyDictionary(valuesRetainedByKey: Bool = false) -> WeakKeyDictionary<Key, Value> {
+        return WeakKeyDictionary<Key, Value>(dictionary: dictionary(), valuesRetainedByKey: valuesRetainedByKey)
+    }
+}
