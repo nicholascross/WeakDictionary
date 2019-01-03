@@ -9,7 +9,7 @@
 
 A naive (strong key/weak value) dictionary &amp; (weak key/weak value) dictionary implementation in swift.
 
-Apple provides an existing implementation which is not type safe but you might prefer to use it instead.  [NSMapTable](https://nshipster.com/nshashtable-and-nsmaptable/) has the advantage that you dont need to manually trigger clean up of old nil references.
+Apple provides an existing implementation and you should use it instead.  [NSMapTable](https://nshipster.com/nshashtable-and-nsmaptable/) also has the advantage that you dont need to manually trigger clean up of old nil references.
 
 ## WeakDictionary
 
