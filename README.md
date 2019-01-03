@@ -11,6 +11,12 @@ A naive (strong key/weak value) dictionary &amp; (weak key/weak value) dictionar
 
 Apple provides an existing implementation and you should use it instead.  [NSMapTable](https://nshipster.com/nshashtable-and-nsmaptable/) also has the advantage that you dont need to manually trigger clean up of old nil references.
 
+**What are some differences from NSMapTable?**
+ - Use of equality operator for key comparison
+ - Supports suscripts and `Collection` protocol inherited behaviour
+ - Keys can optionally retain values as long as the key itself is retained the associated value can be retained
+ - Manual nil reference clean up required.  Weak references are reclaimed as normal but container objects are left holding nil references until reaping is triggered
+
 ## WeakDictionary
 
 * Values stored in the `WeakDictionary` are not retained
