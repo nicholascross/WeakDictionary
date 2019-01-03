@@ -4,12 +4,12 @@
 [![carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage) 
 [![CocoaPods compatible](https://img.shields.io/cocoapods/v/WeakDictionary.svg)](https://cocoapods.org/pods/WeakDictionary) 
 [![GitHub release](https://img.shields.io/github/release/nicholascross/WeakDictionary.svg)](https://github.com/nicholascross/WeakDictionary/releases) 
-![Swift 3.0.x](https://img.shields.io/badge/Swift-4.2.x-orange.svg) 
+![Swift 4.2.x](https://img.shields.io/badge/Swift-4.2.x-orange.svg) 
 ![platforms](https://img.shields.io/badge/platforms-iOS%20%7C%20OS%20X%20%7C%20watchOS%20%7C%20tvOS%20-lightgrey.svg)
 
-A naive (strong key/weak value) dictionary &amp; (weak key/weak value) dictionary implementations in swift.
+A naive (strong key/weak value) dictionary &amp; (weak key/weak value) dictionary implementation in swift.
 
-Apple provides an existing implementation which is not type safe but you might prefer to use it instead.  [NSMapTable](https://nshipster.com/nshashtable-and-nsmaptable/) also has the advantage that you dont need to manually trigger clean up of old nil references.
+Apple provides an existing implementation which is not type safe but you might prefer to use it instead.  [NSMapTable](https://nshipster.com/nshashtable-and-nsmaptable/) has the advantage that you dont need to manually trigger clean up of old nil references.
 
 ## WeakDictionary
 
