@@ -39,6 +39,9 @@
 		E1CF11EC21DD784100488793 /* WeakDictionaryReference.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CF11E321DCA90B00488793 /* WeakDictionaryReference.swift */; };
 		E1CF11ED21DD784200488793 /* WeakDictionaryReference.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CF11E321DCA90B00488793 /* WeakDictionaryReference.swift */; };
 		E1CF11EE21DD784300488793 /* WeakDictionaryReference.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CF11E321DCA90B00488793 /* WeakDictionaryReference.swift */; };
+		E1CF11F021DDAE9F00488793 /* DocumentationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CF11EF21DDAE9F00488793 /* DocumentationTests.swift */; };
+		E1CF11F121DDAE9F00488793 /* DocumentationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CF11EF21DDAE9F00488793 /* DocumentationTests.swift */; };
+		E1CF11F221DDAE9F00488793 /* DocumentationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CF11EF21DDAE9F00488793 /* DocumentationTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -83,6 +86,7 @@
 		E1CF11DF21DCA87200488793 /* WeakKeyDictionary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeakKeyDictionary.swift; sourceTree = "<group>"; };
 		E1CF11E121DCA8AC00488793 /* WeakDictionaryKeyReference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeakDictionaryKeyReference.swift; sourceTree = "<group>"; };
 		E1CF11E321DCA90B00488793 /* WeakDictionaryReference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeakDictionaryReference.swift; sourceTree = "<group>"; };
+		E1CF11EF21DDAE9F00488793 /* DocumentationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentationTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -184,6 +188,7 @@
 				E101D8321DB76CE800B5BDB8 /* Info.plist */,
 				E1381FC41DB8DEDF00FBB089 /* WeakKeyDictionaryTests.swift */,
 				E1014F871DC43B0C00E46D31 /* WeakKeyRetainsValueTests.swift */,
+				E1CF11EF21DDAE9F00488793 /* DocumentationTests.swift */,
 			);
 			path = WeakDictionaryTests;
 			sourceTree = "<group>";
@@ -514,6 +519,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E1CF11F021DDAE9F00488793 /* DocumentationTests.swift in Sources */,
 				E101D8311DB76CE800B5BDB8 /* WeakDictionaryTests.swift in Sources */,
 				E1381FC51DB8DEDF00FBB089 /* WeakKeyDictionaryTests.swift in Sources */,
 				E1014F881DC43B0C00E46D31 /* WeakKeyRetainsValueTests.swift in Sources */,
@@ -535,6 +541,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E1CF11F121DDAE9F00488793 /* DocumentationTests.swift in Sources */,
 				E1B661D51DBC4EE400F9C758 /* WeakDictionaryTests.swift in Sources */,
 				E1B661D61DBC4EE400F9C758 /* WeakKeyDictionaryTests.swift in Sources */,
 				E1014F891DC43B0C00E46D31 /* WeakKeyRetainsValueTests.swift in Sources */,
@@ -556,6 +563,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E1CF11F221DDAE9F00488793 /* DocumentationTests.swift in Sources */,
 				E1B661F71DBC510E00F9C758 /* WeakDictionaryTests.swift in Sources */,
 				E1B661F81DBC510E00F9C758 /* WeakKeyDictionaryTests.swift in Sources */,
 				E1014F8A1DC43B0C00E46D31 /* WeakKeyRetainsValueTests.swift in Sources */,

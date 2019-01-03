@@ -164,26 +164,52 @@ class WeakKeyDictionaryTests: XCTestCase {
         XCTAssertEqual(weakDictionary.count, 1, "Expected nullified weak references to be reaped")
     }
 
-    func testReadmeExample() {
-        var dictionary = WeakKeyDictionary<ExampleKey, ExampleValue>()
-        var transientKey: ExampleKey = ExampleKey(name: "value")
-        let retainedValue: ExampleValue? = ExampleValue()
-        dictionary[transientKey] = retainedValue
-        print("\(dictionary[transientKey] != nil ? "an example exits" : "no example exits")")
-        //prints: an example exits
+    func testConversionFromWeakKeyDictionaryToDictionary() {
+        let retainedKey = ExampleKey(name: "Left")
+        let dictionary: [ExampleKey: ExampleValue] = [
+            retainedKey: ExampleValue(),
+            ExampleKey(name: "Right"): ExampleValue()
+        ]
 
-        transientKey = ExampleKey(name: "anothervalue")
-        let oldKey = ExampleKey(name: "value")
-        print("\(dictionary[oldKey] != nil ? "an example exits" : "no example exits")")
-        //prints: no example exits
+        let weakKeyDictionary = dictionary.weakKeyDictionary()
+        let convertedDictionary = weakKeyDictionary.dictionary()
+        XCTAssertEqual(dictionary.keys, convertedDictionary.keys, "Expect dictionaries to match")
+    }
 
-        print("number of item in dictionary \(dictionary.count)")
-        //prints: number of item in dictionary 1
-        //This is because nil key/value references are not automatically nullified when the key or value is deallocated
+    func testConversionFromWeakKeyDictionaryToWeakKeyDictionary() {
+        let retainedKey = ExampleKey(name: "Left")
+        let dictionary: [ExampleKey: ExampleValue] = [
+            retainedKey: ExampleValue(),
+            ExampleKey(name: "Right"): ExampleValue()
+        ]
 
-        print("number of item in reaped dictionary \(dictionary.weakKeyDictionary().count)")
-        //prints: number of item in reaped dictionary 0
-        //Reaping the dictionary removes any keys without values and values not referenced by any key
+        let weakKeyDictionary = dictionary.weakKeyDictionary()
+        let convertedDictionary = weakKeyDictionary.weakKeyDictionary().dictionary()
+        XCTAssertEqual(dictionary.keys, convertedDictionary.keys, "Expect dictionaries to match")
+    }
+
+    func testConversionFromWeakKeyDictionaryToWeakDictionary() {
+        let retainedKey = ExampleKey(name: "Left")
+        let dictionary: [ExampleKey: ExampleValue] = [
+            retainedKey: ExampleValue(),
+            ExampleKey(name: "Right"): ExampleValue()
+        ]
+
+        let weakKeyDictionary = dictionary.weakKeyDictionary()
+        let convertedDictionary = weakKeyDictionary.weakDictionary().dictionary()
+        XCTAssertEqual(dictionary.keys, convertedDictionary.keys, "Expect dictionaries to match")
+    }
+
+    func testConversionFromWeakDictionaryToWeakKeyDictionary() {
+        let retainedKey = ExampleKey(name: "Left")
+        let dictionary: [ExampleKey: ExampleValue] = [
+            retainedKey: ExampleValue(),
+            ExampleKey(name: "Right"): ExampleValue()
+        ]
+
+        let weakDictionary = dictionary.weakKeyDictionary().weakDictionary()
+        let convertedDictionary = weakDictionary.weakKeyDictionary().dictionary()
+        XCTAssertEqual(dictionary.keys, convertedDictionary.keys, "Expect dictionaries to match")
     }
 
     private func createTestData() -> (Int, [ExampleKey]) {

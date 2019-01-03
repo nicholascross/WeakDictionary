@@ -19,12 +19,12 @@ class WeakKeyRetainsValuesTests: XCTestCase {
 
     func testAssignmentWithValuesRetainedByKey() {
         let accessingKey: ExampleKey = ExampleKey(name: "Left")
-        var retainingKey: ExampleKey? = ExampleKey(name: "Left")
-        var retainedValue: ExampleValue? = ExampleValue()
+        var retainingKey: ExampleKey! = ExampleKey(name: "Left")
+        var retainedValue: ExampleValue! = ExampleValue()
         weakDictionary[retainingKey!] = retainedValue
         XCTAssertEqual(weakDictionary.count, 1, "Expected to be left holding a reference")
 
-        weak var accessedValue = weakDictionary[retainingKey!]
+        weak var accessedValue = weakDictionary[retainingKey]
         XCTAssertNotNil(accessedValue, "Expected key to have a value")
 
         retainedValue = nil
@@ -44,6 +44,31 @@ class WeakKeyRetainsValuesTests: XCTestCase {
 
         weakDictionary.reap()
         XCTAssertNil(transientAccessValue, "Expected value to be nil as it is no longer retained by the key reference")
+    }
+
+    func testInitFromDictionary() {
+        var transientKey: ExampleKey! = ExampleKey(name: "Left")
+        var transientValue: ExampleValue! = ExampleValue()
+        var dictionary: [ExampleKey: ExampleValue]! = [
+            transientKey: transientValue,
+            ExampleKey(name: "Right"): ExampleValue()
+        ]
+
+        weakDictionary = WeakKeyDictionary<ExampleKey, ExampleValue>(dictionary: dictionary, valuesRetainedByKey: true)
+
+        dictionary = nil
+        weak var weaklyHeldValue: ExampleValue? = transientValue
+        transientValue = nil
+
+        XCTAssertNotNil(weakDictionary[ExampleKey(name: "Left")], "Expected value to be retained by key")
+        XCTAssertNotNil(weaklyHeldValue, "Expected to be retained by key")
+
+        transientKey = nil
+        XCTAssertNil(weakDictionary[ExampleKey(name: "Left")], "Expected value to no longer be accessible by key")
+        XCTAssertNotNil(weaklyHeldValue, "Expected to be retained by key container even though key is gone")
+
+        weakDictionary.reap()
+        XCTAssertNil(weaklyHeldValue, "Expected weakly held reference would be released after reaping")
     }
 
 }

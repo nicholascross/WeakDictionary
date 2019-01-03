@@ -48,7 +48,7 @@ public struct WeakKeyDictionary<Key: AnyObject & Hashable, Value: AnyObject> {
     }
 
     public func weakDictionary() -> WeakDictionary<Key, Value> {
-        return WeakDictionary<Key, Value>(dictionary: dictionary())
+        return dictionary().weakDictionary()
     }
 
     public func weakKeyDictionary() -> WeakKeyDictionary<Key, Value> {
@@ -108,5 +108,17 @@ extension WeakKeyDictionary: Collection {
             .forEach { key, value in newStorage[key] = value.value }
 
         return WeakKeyDictionary<Key, Value>(storage: newStorage)
+    }
+}
+
+extension WeakDictionary where Key: AnyObject {
+    public func weakKeyDictionary(valuesRetainedByKey: Bool = false) -> WeakKeyDictionary<Key, Value> {
+        return WeakKeyDictionary<Key, Value>(dictionary: dictionary(), valuesRetainedByKey: valuesRetainedByKey)
+    }
+}
+
+extension Dictionary where Key: AnyObject, Value: AnyObject {
+    public func weakKeyDictionary(valuesRetainedByKey: Bool = false) -> WeakKeyDictionary<Key, Value> {
+        return WeakKeyDictionary<Key, Value>(dictionary: self, valuesRetainedByKey: valuesRetainedByKey)
     }
 }

@@ -112,16 +112,16 @@ class WeakDictionaryTests: XCTestCase {
         XCTAssertEqual(weakDictionary.count, 1, "Expected nullified weak references to be reaped")
     }
 
-    func testReadmeExample() {
-        var dictionary = WeakDictionary<String, ExampleValue>()
-        var value: ExampleValue? = ExampleValue()
-        dictionary["key"] = value
+    func testConversionFromDictionaryToWeakDictionary() {
+        let dictionary: [String: ExampleValue] = [
+            "Left": ExampleValue(),
+            "Right": ExampleValue()
+        ]
 
-        print("\(dictionary["key"] != nil ? "has value" : "value missing")")
-        //prints: has value
+        weakDictionary = dictionary.weakDictionary()
 
-        value = nil
-        print("\(dictionary["key"] != nil ? "has value" : "value missing")")
-        //prints: value missing
+        let convertedDictionary = weakDictionary.dictionary()
+        XCTAssertEqual(dictionary.keys, convertedDictionary.keys, "Expect dictionaries to match")
     }
+
 }
