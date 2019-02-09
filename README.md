@@ -11,6 +11,8 @@ A naive (strong key/weak value) dictionary &amp; (weak key/weak value) dictionar
 
 Apple provides an existing implementation and you should use it instead.  [NSMapTable](https://nshipster.com/nshashtable-and-nsmaptable/) also has the advantage that you dont need to manually trigger clean up of old nil references.
 
+It is also worth considering if clean up of references is even needed for your scenario.  In cases where the dictionary itself is shortlived or the values are likely to be recreated for the same keys then it is probably sufficient to use a standard swift dictionary with a [weak box wrapper](https://gist.github.com/nicholascross/8285cef20b1f5f171557478647cc0cdd) instead.
+
 **What are some differences from NSMapTable?**
  - Use of equality operator for key comparison
  - Supports suscripts and `Collection` protocol inherited behaviour
