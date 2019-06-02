@@ -7,44 +7,53 @@
 //
 
 import Foundation
+import ObjectiveC
+
+fileprivate var AssociatedObjectHandle: UInt8 = 0
+
+fileprivate class WeakKeyBox<T: AnyObject & Hashable>: NSObject {
+    weak var key: T!
+
+    init(_ key: T) {
+        self.key = key
+        super.init()
+        objc_setAssociatedObject(key, &AssociatedObjectHandle, self, .OBJC_ASSOCIATION_RETAIN)
+    }
+
+    @objc override var hash: Int {
+        return key.hashValue
+    }
+
+    @objc override func isEqual(_ object: Any?) -> Bool {
+        return key == (object as! WeakKeyBox<T>).key
+    }
+}
 
 public struct WeakKeyDictionary<Key: AnyObject & Hashable, Value: AnyObject> {
 
-    private var storage: WeakDictionary<WeakDictionaryKey<Key, Value>, Value>
+    private var storage: NSMapTable<WeakKeyBox<Key>, Value>
     private let valuesRetainedByKey: Bool
 
     public init(valuesRetainedByKey: Bool = false) {
         self.init(
-            storage: WeakDictionary<WeakDictionaryKey<Key, Value>, Value>(),
+            storage: NSMapTable(keyOptions: .weakMemory, valueOptions: valuesRetainedByKey ? .strongMemory : .weakMemory),
             valuesRetainedByKey: valuesRetainedByKey
         )
     }
 
     public init(dictionary: [Key: Value], valuesRetainedByKey: Bool = false) {
-        var newStorage = WeakDictionary<WeakDictionaryKey<Key, Value>, Value>()
+        let newStorage = NSMapTable<WeakKeyBox<Key>, Value>(keyOptions: .weakMemory, valueOptions: valuesRetainedByKey ? .strongMemory : .weakMemory, capacity: dictionary.capacity)
 
         dictionary.forEach { key, value in
-            var keyRef: WeakDictionaryKey<Key, Value>!
-
-            if valuesRetainedByKey {
-                keyRef = WeakDictionaryKey<Key, Value>(key: key, value: value)
-            } else {
-                keyRef = WeakDictionaryKey<Key, Value>(key: key)
-            }
-
-            newStorage[keyRef] = value
+            newStorage.setObject(value, forKey: WeakKeyBox<Key>(key))
         }
 
         self.init(storage: newStorage, valuesRetainedByKey: valuesRetainedByKey)
     }
 
-    private init(storage: WeakDictionary<WeakDictionaryKey<Key, Value>, Value>, valuesRetainedByKey: Bool = false) {
+    private init(storage: NSMapTable<WeakKeyBox<Key>, Value>, valuesRetainedByKey: Bool = false) {
         self.storage = storage
         self.valuesRetainedByKey = valuesRetainedByKey
-    }
-
-    public mutating func reap() {
-        storage = weakKeyDictionary().storage
     }
 
     public func weakDictionary() -> WeakDictionary<Key, Value> {
@@ -58,9 +67,9 @@ public struct WeakKeyDictionary<Key: AnyObject & Hashable, Value: AnyObject> {
     public func dictionary() -> [Key: Value] {
         var newStorage = [Key: Value]()
 
-        storage.forEach { key, value in
-            if let retainedKey = key.key, let retainedValue = value.value {
-                newStorage[retainedKey] = retainedValue
+        for key in storage.keyEnumerator() {
+            if let value = storage.object(forKey: (key as! WeakKeyBox<Key>)) {
+                newStorage[(key as! WeakKeyBox<Key>).key] = value
             }
         }
 
@@ -68,44 +77,95 @@ public struct WeakKeyDictionary<Key: AnyObject & Hashable, Value: AnyObject> {
     }
 }
 
+public class WaekKeyDictionaryIndex<Key: AnyObject & Hashable, Value> {
+    fileprivate let key: WeakKeyBox<Key>?
+
+    private let position: UInt
+    private var enumerator: NSEnumerator?
+
+    fileprivate lazy var next: WaekKeyDictionaryIndex<Key, Value> = {
+        defer { self.enumerator = nil }
+        return .init(enumerator: enumerator, position: position + 1)
+    }()
+
+    fileprivate convenience init(enumerator: NSEnumerator?, position: UInt = 0) {
+        if let key = enumerator?.nextObject() as! WeakKeyBox<Key>? {
+            self.init(key: key, enumerator: enumerator, position: position)
+        } else {
+            self.init(key: nil, enumerator: nil, position: .max)
+        }
+    }
+
+    fileprivate convenience init() {
+        self.init(key: nil, enumerator: nil, position: .max)
+    }
+
+    private init(key: WeakKeyBox<Key>?, enumerator: NSEnumerator?, position: UInt) {
+        self.key = key
+        self.enumerator = enumerator
+        self.position = position
+    }
+}
+
+extension WaekKeyDictionaryIndex: Equatable {
+    public static func == (lhs: WaekKeyDictionaryIndex<Key, Value>, rhs: WaekKeyDictionaryIndex<Key, Value>) -> Bool {
+        return lhs.position == rhs.position
+    }
+}
+
+extension WaekKeyDictionaryIndex: Comparable {
+    public static func < (lhs: WaekKeyDictionaryIndex<Key, Value>, rhs: WaekKeyDictionaryIndex<Key, Value>) -> Bool {
+        return lhs.position < rhs.position
+    }
+}
+
 extension WeakKeyDictionary: Collection {
 
-    public typealias Index = DictionaryIndex<WeakDictionaryKey<Key, Value>, WeakDictionaryReference<Value>>
+    public typealias Index = WaekKeyDictionaryIndex<Key, Value>
 
     public var startIndex: Index {
-        return storage.startIndex
+        return Index(enumerator: storage.keyEnumerator())
     }
 
     public var endIndex: Index {
-        return storage.endIndex
+        return Index()
     }
 
     public func index(after index: Index) -> Index {
-        return storage.index(after: index)
+        return index.next
     }
 
-    public subscript(position: Index) -> (WeakDictionaryKey<Key, Value>, WeakDictionaryReference<Value>) {
-        return storage[position]
+    public subscript(position: Index) -> (Key, Value) {
+        guard let key = position.key else {
+            fatalError("Attempting to access WeakKeyDictionary elements using an invalid index")
+        }
+
+        return (key.key, storage.object(forKey: key)!)
     }
 
     public subscript(key: Key) -> Value? {
         get {
-            return storage[WeakDictionaryKey<Key, Value>(key: key)]
+            return storage.object(forKey: WeakKeyBox<Key>(key))
         }
 
         set {
-            let retainedValue = valuesRetainedByKey ? newValue : nil
-            let weakKey = WeakDictionaryKey<Key, Value>(key: key, value: retainedValue)
-            storage[weakKey] = newValue
+            guard let value = newValue else {
+                storage.removeObject(forKey: WeakKeyBox<Key>(key))
+                return
+            }
+
+            storage.setObject(value, forKey: WeakKeyBox<Key>(key))
         }
     }
 
     public subscript(bounds: Range<Index>) -> WeakKeyDictionary<Key, Value> {
-        let subStorage = storage[bounds.lowerBound ..< bounds.upperBound]
-        var newStorage = WeakDictionary<WeakDictionaryKey<Key, Value>, Value>()
+        let newStorage = NSMapTable<WeakKeyBox<Key>, Value>(keyOptions: .strongMemory, valueOptions: .weakMemory)
 
-        subStorage.filter { key, value in return key.key != nil && value.value != nil }
-            .forEach { key, value in newStorage[key] = value.value }
+        var pos = bounds.lowerBound
+        while pos.key != nil && pos != bounds.upperBound {
+            newStorage.setObject(storage.object(forKey: pos.key), forKey: pos.key)
+            pos = pos.next
+        }
 
         return WeakKeyDictionary<Key, Value>(storage: newStorage)
     }
