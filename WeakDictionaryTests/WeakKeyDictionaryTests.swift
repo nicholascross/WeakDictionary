@@ -22,13 +22,16 @@ class WeakKeyDictionaryTests: XCTestCase {
     func testAssignment() {
         var referencingKey: ExampleKey? = ExampleKey(name: "Left")
         var referencedValue: ExampleValue? = ExampleValue()
-        weakDictionary[referencingKey!] = referencedValue
-        XCTAssertEqual(weakDictionary.count, 1, "Expected to be left holding a reference")
 
-        XCTAssertNotNil(weakDictionary[referencingKey!], "Expected key to have a value")
+        autoreleasepool {
+            weakDictionary[referencingKey!] = referencedValue
+            XCTAssertEqual(weakDictionary.count, 1, "Expected to be left holding a reference")
 
-        referencedValue = nil
-        XCTAssertEqual(weakDictionary.count, 1, "Expected to be left holding an empty reference")
+            XCTAssertNotNil(weakDictionary[referencingKey!], "Expected key to have a value")
+            referencedValue = nil
+        }
+
+        XCTAssertEqual(weakDictionary.count, 0, "Expected to be left holding an empty reference")
 
         weak var accessValue = weakDictionary[ExampleKey(name: "Left")]
         XCTAssertNil(accessValue, "Expected key to have no value")
@@ -36,25 +39,27 @@ class WeakKeyDictionaryTests: XCTestCase {
         weakDictionary[ExampleKey(name: "Left")] = nil
         XCTAssertEqual(weakDictionary.count, 0, "Expected to be left holding no references")
 
-        referencingKey = ExampleKey(name: "Right")
-        referencedValue = ExampleValue()
-        weakDictionary[referencingKey!] = referencedValue
-        XCTAssertEqual(weakDictionary.count, 1, "Expected to be left holding a reference")
+        autoreleasepool {
+            referencingKey = ExampleKey(name: "Right")
+            referencedValue = ExampleValue()
+            weakDictionary[referencingKey!] = referencedValue
+            XCTAssertEqual(weakDictionary.count, 1, "Expected to be left holding a reference")
 
-        accessValue = weakDictionary[ExampleKey(name: "Right")]
-        XCTAssertNotNil(accessValue, "Expected key to have a accessible value")
+            accessValue = weakDictionary[ExampleKey(name: "Right")]
+            XCTAssertNotNil(accessValue, "Expected key to have a accessible value")
 
-        referencingKey = nil
-        XCTAssertEqual(weakDictionary.count, 1, "Expected to be left holding a nil reference")
+            referencingKey = nil
+        }
+        XCTAssertEqual(weakDictionary.count, 0, "Expected to be left holding no references")
 
         accessValue = weakDictionary[ExampleKey(name: "Right")]
         XCTAssertNil(accessValue, "Expected key to have no accessible value")
 
         weakDictionary[ExampleKey(name: "Right")] = nil
-        XCTAssertEqual(weakDictionary.count, 1, "Expected to be left holding a nil reference")
+        XCTAssertEqual(weakDictionary.count, 0, "Expected to be left holding no references")
 
         weakDictionary[ExampleKey(name: "Fleeting")] = ExampleValue()
-        XCTAssertEqual(weakDictionary.count, 2, "Expected to be left holding another nil reference")
+        XCTAssertEqual(weakDictionary.count, 0, "Expected to be left holding no references")
     }
 
     func testKeyReaping() {
@@ -80,30 +85,27 @@ class WeakKeyDictionaryTests: XCTestCase {
     }
 
     func testValueReaping() {
-        let retainedKey: ExampleKey = ExampleKey(name: "Left")
-        var transientValue: ExampleValue? = ExampleValue()
-        weakDictionary[retainedKey] = transientValue
-        XCTAssertEqual(weakDictionary.count, 1, "Expected to be left holding an empty reference")
+        autoreleasepool {
+            let retainedKey: ExampleKey = ExampleKey(name: "Left")
+            let transientValue: ExampleValue? = ExampleValue()
+            weakDictionary[retainedKey] = transientValue
+            XCTAssertEqual(weakDictionary.count, 1, "Expected to be left holding an empty reference")
 
-        var reaped = weakDictionary.weakKeyDictionary()
-        XCTAssertEqual(reaped.count, 1, "Expected to be left holding a single reference")
+            let reaped = weakDictionary.weakKeyDictionary()
+            XCTAssertEqual(reaped.count, 1, "Expected to be left holding a single reference")
+        }
 
-        transientValue = nil
-        reaped = weakDictionary.weakKeyDictionary()
+        let reaped = weakDictionary.weakKeyDictionary()
         XCTAssertEqual(reaped.count, 0, "Expected to be left holding no references")
     }
 
     func testMutatingReap() {
-        var transientKey: ExampleKey? = ExampleKey(name: "Left")
-        let retainedValue: ExampleValue = ExampleValue()
-        weakDictionary[transientKey!] = retainedValue
-        XCTAssertEqual(weakDictionary.count, 1, "Expected to be left holding an empty reference")
-
-        weakDictionary.reap()
-        XCTAssertEqual(weakDictionary.count, 1, "Expected to be left holding a single reference")
-
-        transientKey = nil
-        weakDictionary.reap()
+        autoreleasepool {
+            let transientKey: ExampleKey? = ExampleKey(name: "Left")
+            let retainedValue: ExampleValue = ExampleValue()
+            weakDictionary[transientKey!] = retainedValue
+            XCTAssertEqual(weakDictionary.count, 1, "Expected to be left holding a single reference")
+        }
         XCTAssertEqual(weakDictionary.count, 0, "Expected nil references to be reaped")
 
         weakDictionary[ExampleKey(name: "Fleeting")] = ExampleValue()
@@ -111,56 +113,69 @@ class WeakKeyDictionaryTests: XCTestCase {
         weakDictionary[ExampleKey(name: "Fleeting2")] = ExampleValue()
         weakDictionary[ExampleKey(name: "Fleeting3")] = ExampleValue()
         weakDictionary[ExampleKey(name: "Fleeting4")] = ExampleValue()
-        XCTAssertEqual(weakDictionary.count, 5, "Expected to be left holding nil references")
-        weakDictionary.reap()
         XCTAssertEqual(weakDictionary.count, 0, "Expected nil references to be reaped")
     }
 
     func testStrongification() {
         let retainedKey: ExampleKey = ExampleKey(name: "Left")
         var transientValue: ExampleValue? = ExampleValue()
-        weakDictionary[retainedKey] = transientValue
-        XCTAssert(weakDictionary.count == 1, "Expected to be left holding an empty reference \(weakDictionary.count)")
 
-        var reaped = weakDictionary.weakKeyDictionary()
-        XCTAssertEqual(reaped.count, 1, "Expected to be left holding a single reference")
+        var reaped: WeakKeyDictionary<ExampleKey, ExampleValue>!
+        var strongDictionary: [ExampleKey: ExampleValue]!
 
-        var strongDictionary: [ExampleKey: ExampleValue]? = weakDictionary.dictionary()
-        XCTAssert(strongDictionary?.count == 1, "Expected to be holding a single key value pair")
+        autoreleasepool {
+            weakDictionary[retainedKey] = transientValue
+            XCTAssert(weakDictionary.count == 1, "Expected to be left holding an empty reference \(weakDictionary.count)")
 
-        transientValue = nil
-        reaped = weakDictionary.weakKeyDictionary()
-        XCTAssertEqual(reaped.count, 1, "Expected to be left holding a single reference")
+            reaped = weakDictionary.weakKeyDictionary()
+            XCTAssertEqual(reaped.count, 1, "Expected to be left holding a single reference")
+        }
 
-        weak var weakExample: ExampleValue? = strongDictionary?[retainedKey]
-        XCTAssertNotNil(weakExample, "Expected to find Example in strong dictionary")
+        autoreleasepool {
+            strongDictionary = weakDictionary.dictionary()
+            XCTAssert(strongDictionary?.count == 1, "Expected to be holding a single key value pair")
 
-        strongDictionary = nil
+            transientValue = nil
+        }
+
+        autoreleasepool {
+            reaped = weakDictionary.weakKeyDictionary()
+            XCTAssertEqual(reaped.count, 1, "Expected to be left holding a single reference")
+
+            weak var weakExample: ExampleValue? = strongDictionary?[retainedKey]
+            XCTAssertNotNil(weakExample, "Expected to find Example in strong dictionary")
+        }
+
         reaped = weakDictionary.weakKeyDictionary()
         XCTAssertEqual(reaped.count, 0, "Expected unreferenced values to be released")
 
-        transientValue = ExampleValue()
-        weakDictionary[retainedKey] = transientValue
-        transientValue = nil
-        XCTAssertEqual(weakDictionary.count, 1, "Expected to be holding an empty value reference")
+        autoreleasepool {
+            transientValue = ExampleValue()
+            weakDictionary[retainedKey] = transientValue
+            transientValue = nil
+        }
+        XCTAssertEqual(weakDictionary.count, 0, "Expected to be holding no references")
         XCTAssertEqual(weakDictionary.dictionary().count, 0, "Expected empty references to be ignored")
     }
 
     func testInitWithDictionary() {
         let retainedKey = ExampleKey(name: "Left")
-        var strongDict: [ExampleKey: ExampleValue]? = [
-            retainedKey: ExampleValue(),
-            ExampleKey(name: "Right"): ExampleValue()
-        ]
+        var accessValue: ExampleValue!
 
-        weakDictionary = WeakKeyDictionary<ExampleKey, ExampleValue>(dictionary: strongDict!)
-        XCTAssert(weakDictionary.count == 2, "Expected dictionary to be initialised with two references")
+        autoreleasepool {
+            let strongDict = [
+                retainedKey: ExampleValue(),
+                ExampleKey(name: "Right"): ExampleValue()
+            ]
 
-        let accessValue = weakDictionary[retainedKey]
-        XCTAssertNotNil(accessValue, "Expected value to be available for key")
+            weakDictionary = WeakKeyDictionary<ExampleKey, ExampleValue>(dictionary: strongDict)
+            XCTAssert(weakDictionary.count == 2, "Expected dictionary to be initialised with two references")
 
-        strongDict = nil
-        weakDictionary.reap()
+            accessValue = weakDictionary[retainedKey]
+            XCTAssertNotNil(accessValue, "Expected value to be available for key")
+        }
+
+        XCTAssertNotNil(weakDictionary[retainedKey])
         XCTAssertEqual(weakDictionary.count, 1, "Expected nullified weak references to be reaped")
     }
 
